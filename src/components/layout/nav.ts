@@ -1,11 +1,14 @@
 import type { Access } from '@/lib/auth';
 import { can, canAny, canSeeServidores, canSeeTeams } from '@/lib/auth';
 
-export type NavIcon = 'painel' | 'equipes' | 'servidores' | 'encontristas' | 'grupos' | 'configuracoes' | 'usuarios' | 'auditoria';
+export type NavIcon = 'painel' | 'cronograma' | 'equipes' | 'servidores' | 'encontristas' | 'grupos' | 'configuracoes' | 'usuarios' | 'auditoria';
 export type NavItem = { href: string; label: string; icon: NavIcon; group: 'operacao' | 'admin' };
 
 export function buildNav(access: Access): NavItem[] {
-  const items: NavItem[] = [{ href: '/painel', label: 'Painel', icon: 'painel', group: 'operacao' }];
+  const items: NavItem[] = [
+    { href: '/painel', label: 'Painel', icon: 'painel', group: 'operacao' },
+    { href: '/cronograma', label: 'Cronograma', icon: 'cronograma', group: 'operacao' },
+  ];
   if (can(access, 'encontristas.ver')) items.push({ href: '/encontristas', label: 'Recrutas', icon: 'encontristas', group: 'operacao' });
   if (canAny(access, ['encontristas.ver', 'grupos.gerenciar'])) items.push({ href: '/grupos', label: 'Tropas', icon: 'grupos', group: 'operacao' });
   if (canSeeTeams(access)) items.push({ href: '/equipes', label: 'Equipes', icon: 'equipes', group: 'operacao' });

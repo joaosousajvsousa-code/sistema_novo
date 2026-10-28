@@ -13,7 +13,8 @@ export type Permission =
   | 'encontristas.ver'
   | 'encontristas.editar'
   | 'saude.ver'
-  | 'grupos.gerenciar';
+  | 'grupos.gerenciar'
+  | 'programacao.gerenciar';
 
 export type Access = {
   userId: string;

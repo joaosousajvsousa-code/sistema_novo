@@ -21,6 +21,7 @@ const MESSAGES: Record<string, string> = {
   LIMITE_MENOR_QUE_INSCRITOS: 'O limite não pode ficar abaixo da quantidade atual de integrantes.',
   ULTIMO_ADMIN: 'O sistema precisa de pelo menos um administrador ativo.',
   SELECAO_GRANDE: 'Selecione no máximo 500 pessoas por vez.',
+  AJUSTE_INVALIDO: 'Informe um ajuste entre 1 e 720 minutos.',
   SEM_EQUIPE_TENENTE: 'Não há equipe de tenentes. Crie a equipe “Tenente” em Equipes ou escolha a equipe em Configurações.',
   TENENTE_INVALIDO: 'Só podem ser tenentes os soldados/servos ativos da equipe de tenentes.',
   TENENTE_EM_OUTRA_TROPA: 'Um dos tenentes escolhidos já lidera outra tropa.',

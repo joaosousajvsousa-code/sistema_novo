@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
+  CalendarClock,
   Users,
   UserRound,
   Shapes,
@@ -22,6 +23,7 @@ import type { NavIcon, NavItem } from './nav';
 
 const ICONS: Record<NavIcon, React.ComponentType<{ className?: string }>> = {
   painel: LayoutDashboard,
+  cronograma: CalendarClock,
   encontristas: UserRound,
   grupos: Shapes,
   equipes: HandHeart,

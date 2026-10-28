@@ -5,6 +5,7 @@ import { can, canSeeTeams, requireAccess } from '@/lib/auth';
 import { createClient } from '@/lib/supabase/server';
 import { Panel, EmptyState, Notice } from '@/components/ui/layout';
 import { getActiveCamp } from '@/lib/camp';
+import { computeSchedule, formatDelay, formatTime, type ScheduleItem } from '@/lib/schedule';
 import { ButtonLink } from '@/components/ui/button';
 import { TIME_ZONE } from '@/config/app';
 import { cn } from '@/lib/cn';
@@ -84,9 +85,18 @@ export default async function PainelPage() {
       : Promise.resolve({ data: [] as { id: string; name: string; capacity: number; occupied: number; available: number; status: string }[] }),
   ]);
 
+  const { data: scheduleRows } = await supabase
+    .from('schedule_items')
+    .select('id, title, description, location, responsible, planned_start, planned_end, original_start, original_end, sort_order, status, actual_start, actual_end, notes')
+    .eq('camp_id', s.camp.id);
+  const schedule = computeSchedule((scheduleRows ?? []) as ScheduleItem[]);
   const capacity = s.capacity ?? 0;
   const servidores = s.servidores ?? 0;
-  const alerts = (s.alerts ?? []).map((a) => ({
+  const scheduleAlert =
+    schedule.delay >= 5
+      ? [{ level: 'warning' as const, kind: 'programacao_atrasada', text: `Cronograma com ${formatDelay(schedule.delay)}`, href: '/cronograma' }]
+      : [];
+  const alerts = [...scheduleAlert, ...(s.alerts ?? [])].map((a) => ({
     ...a,
     text: a.text.replace(/encontrista\(s\) ainda sem grupo/, 'recruta(s) ainda sem tropa').replace(/encontrista\(s\) sem tamanho/, 'recruta(s) sem tamanho'),
   }));
@@ -133,6 +143,25 @@ export default async function PainelPage() {
           </>
         ) : null}
       </section>
+
+      {schedule.items.length ? (
+        <Link href="/cronograma" className="mb-5 block rounded-lg bg-manto p-4 text-white hover:bg-manto-600 sm:p-5">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="text-xs text-manto-100/80">{schedule.current ? 'Agora no cronograma' : 'Próximo momento'}</p>
+            <span className={cn('rounded px-2 py-0.5 text-xs font-bold', schedule.delay >= 15 ? 'bg-erro' : schedule.delay >= 5 ? 'bg-cirio text-manto-800' : 'bg-white/15')}>
+              {formatDelay(schedule.delay)}
+            </span>
+          </div>
+          <p className="mt-1 text-lg font-bold">{(schedule.current ?? schedule.next)?.title ?? 'Cronograma concluído'}</p>
+          <p className="mt-0.5 text-sm text-manto-100/80">
+            {schedule.current
+              ? `Começou ${formatTime(schedule.current.actual_start)} · término previsto ${formatTime(schedule.current.planned_end)}${schedule.next ? ` · depois: ${schedule.next.title}` : ''}`
+              : schedule.next
+                ? `Previsto para ${formatTime(schedule.projectedStart[schedule.next.id] ?? schedule.next.planned_start)}${schedule.next.location ? ` · ${schedule.next.location}` : ''}`
+                : 'Todos os momentos foram encerrados.'}
+          </p>
+        </Link>
+      ) : null}
 
       <div className="grid gap-5 lg:grid-cols-[1fr_1fr]">
         <Panel title="Alertas" description="Calculados a partir dos cadastros atuais." bodyClassName="p-0 sm:p-0">
