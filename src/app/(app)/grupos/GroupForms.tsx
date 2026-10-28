@@ -10,8 +10,8 @@ export type GroupData = { id: string; name: string; description: string | null; 
 function Fields({ g }: { g?: GroupData }) {
   return (
     <div className="grid gap-4 sm:grid-cols-2">
-      <Field label="Nome do grupo" name="name" required>
-        <Input defaultValue={g?.name ?? ''} placeholder="Ex.: Grupo São Francisco" />
+      <Field label="Nome da tropa" name="name" required>
+        <Input defaultValue={g?.name ?? ''} placeholder="Ex.: Tropa São Francisco" />
       </Field>
       <Field label="Limite de integrantes" name="capacity" hint="Deixe em branco para não limitar.">
         <Input type="number" inputMode="numeric" min={1} defaultValue={g?.capacity ?? ''} />
@@ -34,7 +34,7 @@ export function NewGroupForm() {
   if (!open) {
     return (
       <button type="button" onClick={() => setOpen(true)} className="text-sm font-bold text-manto hover:underline">
-        + Criar grupo
+        + Criar tropa
       </button>
     );
   }
@@ -45,7 +45,7 @@ export function NewGroupForm() {
         <button type="button" onClick={() => setOpen(false)} className="inline-flex h-11 items-center justify-center rounded-md px-4 text-sm font-bold text-pedra-600">
           Cancelar
         </button>
-        <SubmitButton>Criar grupo</SubmitButton>
+        <SubmitButton>Criar tropa</SubmitButton>
       </FormActions>
     </ActionForm>
   );
@@ -57,7 +57,7 @@ export function EditGroupForm({ g }: { g: GroupData }) {
       <input type="hidden" name="id" value={g.id} />
       <Fields g={g} />
       <FormActions>
-        <SubmitButton>Salvar grupo</SubmitButton>
+        <SubmitButton>Salvar tropa</SubmitButton>
       </FormActions>
     </ActionForm>
   );
@@ -67,8 +67,8 @@ export function DeleteGroupForm({ id }: { id: string }) {
   return (
     <ActionForm action={deleteGroup}>
       <input type="hidden" name="id" value={id} />
-      <SubmitButton variant="quiet-danger" className="border border-erro/30" confirmMessage="Excluir este grupo?" pendingText="Excluindo…">
-        Excluir grupo
+      <SubmitButton variant="quiet-danger" className="border border-erro/30" confirmMessage="Excluir esta tropa?" pendingText="Excluindo…">
+        Excluir tropa
       </SubmitButton>
     </ActionForm>
   );

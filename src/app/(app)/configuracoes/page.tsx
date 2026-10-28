@@ -21,7 +21,7 @@ export default async function ConfiguracoesPage() {
 
   return (
     <>
-      <PageHeader title="Configurações" description="Dados do acampamento, camisetas e o formulário de inscrição dos servidores." />
+      <PageHeader title="Configurações" description="Dados do acampamento, camisetas e o formulário de inscrição dos soldados/servos." />
       {camp ? (
         <Panel>
           <CampForm camp={camp as CampData} />

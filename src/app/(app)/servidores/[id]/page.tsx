@@ -12,7 +12,7 @@ import { MEMBERSHIP_STATUS, SOURCE_LABEL } from '@/lib/labels';
 import { EditServidorForm, type ServidorData } from '../ServidorForm';
 import { MoveForm, StatusForm } from './ServidorActions';
 
-export const metadata: Metadata = { title: 'Servidor' };
+export const metadata: Metadata = { title: 'Soldado/servo' };
 
 export default async function ServidorPage({ params, searchParams }: { params: { id: string }; searchParams: { aba?: string; novo?: string } }) {
   const access = await requireCheck(canSeeServidores);
@@ -60,18 +60,18 @@ export default async function ServidorPage({ params, searchParams }: { params: {
         title={person.full_name}
         description={
           <>
-            Servidor na equipe{' '}
+            Soldado/servo na equipe{' '}
             <Link href={`/equipes/${m.team_id}`} className="font-bold text-manto hover:underline">
               {team.name}
             </Link>
           </>
         }
-        back={{ href: '/servidores', label: 'Servidores' }}
+        back={{ href: '/servidores', label: 'Soldados/Servos' }}
         actions={st ? <Badge tone={st.tone}>Inscrição {st.label.toLowerCase()}</Badge> : null}
       />
       {searchParams.novo ? (
         <Notice tone="ok" className="mb-5">
-          Servidor cadastrado.
+          Soldado/servo cadastrado.
         </Notice>
       ) : null}
       <Tabs

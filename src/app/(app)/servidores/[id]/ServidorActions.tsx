@@ -45,7 +45,7 @@ export function MoveForm({ id, teams }: { id: string; teams: { id: string; name:
           ))}
         </Select>
       </Field>
-      <SubmitButton variant="secondary" confirmMessage="Transferir este servidor para a equipe escolhida?">
+      <SubmitButton variant="secondary" confirmMessage="Transferir este soldado/servo para a equipe escolhida?">
         Transferir
       </SubmitButton>
     </ActionForm>

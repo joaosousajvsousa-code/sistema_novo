@@ -62,7 +62,7 @@ export default async function EquipePage({ params, searchParams }: { params: { i
           <>
             {canAdd && team.status !== 'inativa' ? (
               <ButtonLink href={`/servidores/novo?equipe=${team.id}`} variant="secondary">
-                <UserPlus className="h-4 w-4" /> Cadastrar servidor
+                <UserPlus className="h-4 w-4" /> Cadastrar soldado/servo
               </ButtonLink>
             ) : null}
             {manage ? (

@@ -5,7 +5,7 @@ import { campEditable, getActiveCamp } from '@/lib/camp';
 import { PageHeader, Panel, Notice } from '@/components/ui/layout';
 import { NewEncontristaForm } from '../EncontristaForm';
 
-export const metadata: Metadata = { title: 'Cadastrar encontrista' };
+export const metadata: Metadata = { title: 'Cadastrar recruta' };
 
 export default async function NovoEncontristaPage({ searchParams }: { searchParams: { salvo?: string } }) {
   await requirePerm('encontristas.editar');
@@ -14,9 +14,9 @@ export default async function NovoEncontristaPage({ searchParams }: { searchPara
   return (
     <>
       <PageHeader
-        title="Cadastrar encontrista"
-        description="Transcrição da ficha física. O grupo é definido depois, na distribuição."
-        back={{ href: '/encontristas', label: 'Encontristas' }}
+        title="Cadastrar recruta"
+        description="Transcrição da ficha física. A tropa é definida depois, na distribuição."
+        back={{ href: '/encontristas', label: 'Recrutas' }}
       />
       {searchParams.salvo ? (
         <Notice tone="ok" className="mb-5">

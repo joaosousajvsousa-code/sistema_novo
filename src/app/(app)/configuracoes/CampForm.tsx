@@ -59,12 +59,12 @@ export function CampForm({ camp }: { camp: CampData }) {
           </Select>
         </Field>
       </FormSection>
-      <FormSection title="Camisetas" description="Tamanhos oferecidos para servidores e encontristas.">
+      <FormSection title="Camisetas" description="Tamanhos oferecidos para soldados/servos e recrutas.">
         <Field label="Tamanhos" name="shirt_sizes" hint="Separados por vírgula, na ordem em que devem aparecer." required className="sm:col-span-2">
           <Input defaultValue={(camp.shirt_sizes ?? ['PP', 'P', 'M', 'G', 'GG', 'XG', 'XXG']).join(', ')} />
         </Field>
       </FormSection>
-      <FormSection title="Inscrição dos servidores" description="Perguntas extras exibidas no link de inscrição de todas as equipes.">
+      <FormSection title="Inscrição dos soldados/servos" description="Perguntas extras exibidas no link de inscrição de todas as equipes.">
         <SignupFieldsEditor initial={camp.signup_fields ?? []} />
         <Field label="Aviso de privacidade" name="privacy_notice" hint="Aparece no formulário, junto do pedido de consentimento." className="sm:col-span-2">
           <Textarea rows={4} defaultValue={camp.privacy_notice ?? DEFAULT_PRIVACY} />

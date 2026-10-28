@@ -8,7 +8,7 @@ import { formatDateRange } from '@/lib/format';
 import { PublicForm } from './PublicForm';
 
 export const dynamic = 'force-dynamic';
-export const metadata: Metadata = { title: 'Inscrição de servidores' };
+export const metadata: Metadata = { title: 'Inscrição de soldados/servos' };
 
 type Info = {
   team_name: string;

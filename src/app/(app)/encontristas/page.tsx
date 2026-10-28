@@ -10,7 +10,7 @@ import { Input, Select } from '@/components/ui/input';
 import { formatPhone, onlyDigits } from '@/lib/format';
 import { PAGE_SIZE } from '@/config/app';
 
-export const metadata: Metadata = { title: 'Encontristas' };
+export const metadata: Metadata = { title: 'Recrutas' };
 
 type SP = { q?: string; grupo?: string; status?: string; tamanho?: string; pagina?: string };
 
@@ -29,7 +29,7 @@ export default async function EncontristasPage({ searchParams }: { searchParams:
   if (!camp) {
     return (
       <>
-        <PageHeader title="Encontristas" />
+        <PageHeader title="Recrutas" />
         <Notice>Nenhum acampamento ativo.</Notice>
       </>
     );
@@ -68,12 +68,12 @@ export default async function EncontristasPage({ searchParams }: { searchParams:
   return (
     <>
       <PageHeader
-        title="Encontristas"
-        description={count !== null ? `${count} ${status === 'cancelado' ? 'ficha(s) cancelada(s)' : 'encontrista(s)'}` : undefined}
+        title="Recrutas"
+        description={count !== null ? `${count} ${status === 'cancelado' ? 'ficha(s) cancelada(s)' : 'recruta(s)'}` : undefined}
         actions={
           canCreate ? (
             <ButtonLink href="/encontristas/novo">
-              <UserPlus className="h-4 w-4" /> Cadastrar encontrista
+              <UserPlus className="h-4 w-4" /> Cadastrar recruta
             </ButtonLink>
           ) : null
         }
@@ -84,11 +84,11 @@ export default async function EncontristasPage({ searchParams }: { searchParams:
         </label>
         <Input id="q" name="q" type="search" defaultValue={q} placeholder="Nome ou telefone" />
         <label htmlFor="grupo" className="sr-only">
-          Grupo
+          Tropa
         </label>
         <Select id="grupo" name="grupo" defaultValue={searchParams.grupo ?? ''}>
-          <option value="">Todos os grupos</option>
-          <option value="sem">Sem grupo</option>
+          <option value="">Todas as tropas</option>
+          <option value="sem">Sem tropa</option>
           {(groups ?? []).map((g) => (
             <option key={g.id} value={g.id}>
               {g.name}
@@ -120,12 +120,12 @@ export default async function EncontristasPage({ searchParams }: { searchParams:
       </form>
       <div className="rounded-lg border border-pedra-200 bg-white">
         {error ? (
-          <EmptyState title="Não foi possível carregar os encontristas" description="Verifique a conexão e recarregue a página." />
+          <EmptyState title="Não foi possível carregar os recrutas" description="Verifique a conexão e recarregue a página." />
         ) : !rows?.length ? (
           <EmptyState
             icon={<UserRound className="h-8 w-8" />}
-            title={hasFilters ? 'Nenhum encontrista encontrado com esses filtros' : 'Nenhum encontrista cadastrado'}
-            description={hasFilters ? undefined : 'Cadastre as fichas físicas aqui. A distribuição em grupos vem depois.'}
+            title={hasFilters ? 'Nenhum recruta encontrado com esses filtros' : 'Nenhum recruta cadastrado'}
+            description={hasFilters ? undefined : 'Cadastre as fichas físicas aqui. A distribuição em tropas vem depois.'}
             action={
               hasFilters ? (
                 <ButtonLink href="/encontristas" variant="secondary" size="sm">
@@ -143,7 +143,7 @@ export default async function EncontristasPage({ searchParams }: { searchParams:
             <div className="hidden grid-cols-[1fr_160px_180px_90px] gap-4 border-b border-pedra-200 px-5 py-2 text-xs text-pedra-500 md:grid">
               <span>Nome</span>
               <span>Telefone</span>
-              <span>Grupo</span>
+              <span>Tropa</span>
               <span>Camiseta</span>
             </div>
             <ul className="divide-y divide-pedra-100">
@@ -157,7 +157,7 @@ export default async function EncontristasPage({ searchParams }: { searchParams:
                     <span className="text-right text-sm md:order-last md:text-left">{r.shirt_size ?? <Badge tone="aviso">—</Badge>}</span>
                     <span className="text-sm text-pedra-600">{formatPhone(r.phone) || '—'}</span>
                     <span className="truncate text-sm max-md:col-span-2">
-                      {r.group_name ? <span className="text-pedra-700">{r.group_name}</span> : <Badge tone="aviso">Sem grupo</Badge>}
+                      {r.group_name ? <span className="text-pedra-700">{r.group_name}</span> : <Badge tone="aviso">Sem tropa</Badge>}
                     </span>
                   </Link>
                 </li>

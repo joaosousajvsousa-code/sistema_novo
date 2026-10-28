@@ -9,7 +9,7 @@ import { ButtonLink } from '@/components/ui/button';
 import { cn } from '@/lib/cn';
 import { NewGroupForm } from './GroupForms';
 
-export const metadata: Metadata = { title: 'Grupos' };
+export const metadata: Metadata = { title: 'Tropas' };
 
 export default async function GruposPage() {
   const access = await requirePerm('encontristas.ver', 'grupos.gerenciar');
@@ -17,7 +17,7 @@ export default async function GruposPage() {
   if (!camp) {
     return (
       <>
-        <PageHeader title="Grupos de encontristas" />
+        <PageHeader title="Tropas de recrutas" />
         <Notice>Nenhum acampamento ativo.</Notice>
       </>
     );
@@ -33,19 +33,19 @@ export default async function GruposPage() {
   return (
     <>
       <PageHeader
-        title="Grupos de encontristas"
-        description="Separados das equipes de serviço. Cada encontrista participa de um grupo."
+        title="Tropas de recrutas"
+        description="Separados das equipes de serviço. Cada recruta participa de uma tropa."
         actions={
           manage ? (
             <ButtonLink href="/grupos/distribuir">
-              <Shuffle className="h-4 w-4" /> Distribuir encontristas
+              <Shuffle className="h-4 w-4" /> Distribuir recrutas
             </ButtonLink>
           ) : null
         }
       />
       {(semGrupo ?? 0) > 0 ? (
         <Notice tone="aviso" className="mb-5">
-          {semGrupo} encontrista(s) ainda sem grupo.{' '}
+          {semGrupo} recruta(s) ainda sem tropa.{' '}
           {manage ? (
             <Link href="/grupos/distribuir" className="font-bold underline">
               Distribuir agora
@@ -54,14 +54,14 @@ export default async function GruposPage() {
         </Notice>
       ) : null}
       <Panel
-        title={`${groups?.length ?? 0} grupo(s)`}
-        description={groups?.length ? `${total} encontrista(s) distribuído(s)` : undefined}
+        title={`${groups?.length ?? 0} tropa(s)`}
+        description={groups?.length ? `${total} recruta(s) distribuído(s)` : undefined}
         bodyClassName="p-0 sm:p-0"
       >
         {error ? (
-          <EmptyState title="Não foi possível carregar os grupos" />
+          <EmptyState title="Não foi possível carregar as tropas" />
         ) : !groups?.length ? (
-          <EmptyState icon={<Shapes className="h-8 w-8" />} title="Nenhum grupo criado" description={manage ? 'Crie os grupos e depois distribua os encontristas.' : undefined} />
+          <EmptyState icon={<Shapes className="h-8 w-8" />} title="Nenhuma tropa criada" description={manage ? 'Crie as tropas e depois distribua os recrutas.' : undefined} />
         ) : (
           <ul className="divide-y divide-pedra-100">
             {groups.map((g) => {

@@ -7,7 +7,7 @@ export function AuthFrame({ title, subtitle, children }: { title: string; subtit
       <div className="relative overflow-hidden bg-manto px-6 pb-16 pt-8 text-white lg:flex lg:w-[44%] lg:flex-col lg:p-12">
         <Logo light className="relative z-10" />
         <div className="relative z-10 mt-[14vh] hidden max-w-sm lg:block">
-          <p className="text-2xl font-bold leading-snug">Equipes, encontristas e programação do acampamento num só lugar.</p>
+          <p className="text-2xl font-bold leading-snug">Equipes, recrutas e programação do acampamento num só lugar.</p>
           <p className="mt-3 text-sm text-manto-100/70">Acesso restrito à coordenação e às equipes de serviço.</p>
         </div>
         <svg aria-hidden viewBox="0 0 400 120" className="absolute -bottom-px left-0 h-16 w-full text-pedra lg:hidden" preserveAspectRatio="none">

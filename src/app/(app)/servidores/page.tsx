@@ -10,7 +10,7 @@ import { Input, Select } from '@/components/ui/input';
 import { formatPhone, onlyDigits } from '@/lib/format';
 import { PAGE_SIZE } from '@/config/app';
 
-export const metadata: Metadata = { title: 'Servidores' };
+export const metadata: Metadata = { title: 'Soldados/Servos' };
 
 type SP = { q?: string; equipe?: string; status?: string; tamanho?: string; pagina?: string };
 
@@ -20,7 +20,7 @@ export default async function ServidoresPage({ searchParams }: { searchParams: S
   if (!camp) {
     return (
       <>
-        <PageHeader title="Servidores" />
+        <PageHeader title="Soldados/Servos" />
         <Notice>Nenhum acampamento ativo.</Notice>
       </>
     );
@@ -67,12 +67,12 @@ export default async function ServidoresPage({ searchParams }: { searchParams: S
   return (
     <>
       <PageHeader
-        title="Servidores"
-        description={count !== null ? `${count} ${status === 'cancelada' ? 'inscrição(ões) cancelada(s)' : 'servidor(es)'}` : undefined}
+        title="Soldados/Servos"
+        description={count !== null ? `${count} ${status === 'cancelada' ? 'inscrição(ões) cancelada(s)' : 'soldado(s)/servo(s)'}` : undefined}
         actions={
           canCreate ? (
             <ButtonLink href={searchParams.equipe ? `/servidores/novo?equipe=${searchParams.equipe}` : '/servidores/novo'}>
-              <UserPlus className="h-4 w-4" /> Cadastrar servidor
+              <UserPlus className="h-4 w-4" /> Cadastrar soldado/servo
             </ButtonLink>
           ) : null
         }
@@ -119,11 +119,11 @@ export default async function ServidoresPage({ searchParams }: { searchParams: S
       </form>
       <div className="rounded-lg border border-pedra-200 bg-white">
         {error ? (
-          <EmptyState title="Não foi possível carregar os servidores" description="Verifique a conexão e recarregue a página." />
+          <EmptyState title="Não foi possível carregar os soldados/servos" description="Verifique a conexão e recarregue a página." />
         ) : !rows?.length ? (
           <EmptyState
             icon={<Users className="h-8 w-8" />}
-            title={hasFilters ? 'Nenhum servidor encontrado com esses filtros' : 'Nenhum servidor inscrito ainda'}
+            title={hasFilters ? 'Nenhum soldado/servo encontrado com esses filtros' : 'Nenhum soldado/servo inscrito ainda'}
             description={hasFilters ? undefined : 'As inscrições pelo link de cada equipe aparecem aqui.'}
             action={hasFilters ? <ButtonLink href="/servidores" variant="secondary" size="sm">Limpar filtros</ButtonLink> : null}
           />

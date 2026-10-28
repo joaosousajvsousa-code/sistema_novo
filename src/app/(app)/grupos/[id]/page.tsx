@@ -9,7 +9,7 @@ import { ButtonLink } from '@/components/ui/button';
 import { ageOn, formatPhone } from '@/lib/format';
 import { DeleteGroupForm, EditGroupForm, type GroupData } from '../GroupForms';
 
-export const metadata: Metadata = { title: 'Grupo' };
+export const metadata: Metadata = { title: 'Tropa' };
 
 export default async function GrupoPage({ params }: { params: { id: string } }) {
   const access = await requirePerm('encontristas.ver', 'grupos.gerenciar');
@@ -34,11 +34,11 @@ export default async function GrupoPage({ params }: { params: { id: string } }) 
         description={[g.responsaveis ? `Responsáveis: ${g.responsaveis}` : null, `${g.occupied}${g.capacity ? ` de ${g.capacity}` : ''} integrante(s)`]
           .filter(Boolean)
           .join(' · ')}
-        back={{ href: '/grupos', label: 'Grupos' }}
+        back={{ href: '/grupos', label: 'Tropas' }}
         actions={
           manage ? (
             <ButtonLink href="/grupos/distribuir" variant="secondary">
-              Adicionar encontristas
+              Adicionar recrutas
             </ButtonLink>
           ) : null
         }
@@ -48,7 +48,7 @@ export default async function GrupoPage({ params }: { params: { id: string } }) 
           {!canSee ? (
             <EmptyState title="Sem permissão para ver os integrantes" />
           ) : !members?.length ? (
-            <EmptyState title="Nenhum integrante ainda" description={manage ? 'Use “Distribuir encontristas” para adicionar pessoas.' : undefined} />
+            <EmptyState title="Nenhum integrante ainda" description={manage ? 'Use “Distribuir recrutas” para adicionar pessoas.' : undefined} />
           ) : (
             <ul className="divide-y divide-pedra-100">
               {members.map((m) => {
@@ -73,17 +73,17 @@ export default async function GrupoPage({ params }: { params: { id: string } }) 
         </Panel>
         <div className="space-y-5">
           {manage ? (
-            <Panel title="Dados do grupo">
+            <Panel title="Dados da tropa">
               <EditGroupForm g={g as GroupData} />
             </Panel>
           ) : (
-            <Panel title="Sobre o grupo">
+            <Panel title="Sobre a tropa">
               <p className="whitespace-pre-line text-sm">{g.description || 'Sem descrição.'}</p>
               {g.notes ? <p className="mt-3 whitespace-pre-line text-sm text-pedra-600">{g.notes}</p> : null}
             </Panel>
           )}
           {manage && g.occupied === 0 ? (
-            <Panel title="Excluir grupo">
+            <Panel title="Excluir tropa">
               <DeleteGroupForm id={g.id} />
             </Panel>
           ) : null}

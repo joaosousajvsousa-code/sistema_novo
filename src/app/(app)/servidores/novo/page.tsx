@@ -6,7 +6,7 @@ import { PageHeader, Panel, Notice } from '@/components/ui/layout';
 import { redirect } from 'next/navigation';
 import { NewServidorForm } from '../ServidorForm';
 
-export const metadata: Metadata = { title: 'Cadastrar servidor' };
+export const metadata: Metadata = { title: 'Cadastrar soldado/servo' };
 
 export default async function NovoServidorPage({ searchParams }: { searchParams: { equipe?: string } }) {
   const access = await requireAccess();
@@ -23,9 +23,9 @@ export default async function NovoServidorPage({ searchParams }: { searchParams:
   return (
     <>
       <PageHeader
-        title="Cadastrar servidor"
+        title="Cadastrar soldado/servo"
         description="Para quem não consegue usar o link. As mesmas regras de vagas e duplicidade valem aqui."
-        back={{ href: '/servidores', label: 'Servidores' }}
+        back={{ href: '/servidores', label: 'Soldados/Servos' }}
       />
       {!teams?.length ? (
         <Notice>Nenhuma equipe disponível para cadastro.</Notice>

@@ -11,7 +11,7 @@ import { ENCONTRISTA_STATUS, HEALTH_STATUS } from '@/lib/labels';
 import { EditEncontristaForm, EditHealthForm, type EncontristaData, type HealthData } from '../EncontristaForm';
 import { FichaStatusForm, GroupForm } from './FichaActions';
 
-export const metadata: Metadata = { title: 'Ficha do encontrista' };
+export const metadata: Metadata = { title: 'Ficha do recruta' };
 
 const TABS = ['dados', 'emergencia', 'saude', 'grupo', 'historico', 'editar'] as const;
 type Tab = (typeof TABS)[number];
@@ -94,8 +94,8 @@ export default async function FichaPage({ params, searchParams }: { params: { id
     <>
       <PageHeader
         title={person.full_name}
-        description={`${age !== null ? `${age} anos · ` : ''}${assignment?.group?.name ?? 'Sem grupo'}`}
-        back={{ href: '/encontristas', label: 'Encontristas' }}
+        description={`${age !== null ? `${age} anos · ` : ''}${assignment?.group?.name ?? 'Sem tropa'}`}
+        back={{ href: '/encontristas', label: 'Recrutas' }}
         actions={e.status !== 'ativo' && st ? <Badge tone={st.tone}>Ficha {st.label.toLowerCase()}</Badge> : null}
       />
       {searchParams.novo ? (
@@ -113,7 +113,7 @@ export default async function FichaPage({ params, searchParams }: { params: { id
           { key: 'dados', label: 'Dados pessoais', href: base },
           { key: 'emergencia', label: 'Emergência', href: `${base}?aba=emergencia` },
           { key: 'saude', label: 'Saúde', href: `${base}?aba=saude` },
-          { key: 'grupo', label: 'Grupo', href: `${base}?aba=grupo` },
+          { key: 'grupo', label: 'Tropa', href: `${base}?aba=grupo` },
           { key: 'historico', label: 'Histórico', href: `${base}?aba=historico` },
           ...(canEdit ? [{ key: 'editar', label: 'Editar', href: `${base}?aba=editar` }] : []),
         ]}
@@ -225,20 +225,20 @@ export default async function FichaPage({ params, searchParams }: { params: { id
       ) : null}
 
       {tab === 'grupo' ? (
-        <Panel title="Grupo">
+        <Panel title="Tropa">
           <p className="text-sm">
             {assignment?.group?.name ? (
               <>
-                Grupo atual: <strong>{assignment.group.name}</strong>
+                Tropa atual: <strong>{assignment.group.name}</strong>
                 <span className="text-pedra-500"> · desde {formatDateTime(assignment.assigned_at)}</span>
               </>
             ) : (
-              'Ainda sem grupo.'
+              'Ainda sem tropa.'
             )}
           </p>
           {canGroups && e.status === 'ativo' ? (
             <div className="mt-4">
-              {groups.length ? <GroupForm id={e.id} current={assignment?.group_id ?? null} groups={groups} /> : <p className="text-sm text-pedra-500">Nenhum grupo criado ainda.</p>}
+              {groups.length ? <GroupForm id={e.id} current={assignment?.group_id ?? null} groups={groups} /> : <p className="text-sm text-pedra-500">Nenhuma tropa criada ainda.</p>}
             </div>
           ) : null}
         </Panel>

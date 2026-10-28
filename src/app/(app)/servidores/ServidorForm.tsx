@@ -99,7 +99,7 @@ export function NewServidorForm({
           </Select>
         </Field>
       </FormSection>
-      <FormSection title="Dados do servidor">
+      <FormSection title="Dados do soldado/servo">
         <PersonFields sizes={sizes} />
       </FormSection>
       {fields.length ? (
@@ -107,7 +107,7 @@ export function NewServidorForm({
           <ExtraFields fields={fields} />
         </FormSection>
       ) : null}
-      <FormSection title="Observações" description="Internas, não aparecem para o servidor.">
+      <FormSection title="Observações" description="Internas, não aparecem para o soldado/servo.">
         <Field label="Observações administrativas" name="admin_notes" className="sm:col-span-2">
           <Textarea />
         </Field>
@@ -116,7 +116,7 @@ export function NewServidorForm({
         <Link href="/servidores" className="inline-flex h-11 items-center justify-center rounded-md px-4 text-sm font-bold text-pedra-600">
           Cancelar
         </Link>
-        <SubmitButton>Cadastrar servidor</SubmitButton>
+        <SubmitButton>Cadastrar soldado/servo</SubmitButton>
       </FormActions>
     </ActionForm>
   );

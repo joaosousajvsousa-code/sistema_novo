@@ -57,7 +57,7 @@ export function DistributeForm({ rows, groups, allowRemove }: { rows: Row[]; gro
                     {r.shirt_size ? ` · camiseta ${r.shirt_size}` : ''}
                   </span>
                 </span>
-                {r.group_name ? <Badge tone="manto">{r.group_name}</Badge> : <Badge tone="aviso">Sem grupo</Badge>}
+                {r.group_name ? <Badge tone="manto">{r.group_name}</Badge> : <Badge tone="aviso">Sem tropa</Badge>}
               </label>
             </li>
           ))}
@@ -72,7 +72,7 @@ export function DistributeForm({ rows, groups, allowRemove }: { rows: Row[]; gro
           <Field label="Destino" name="group_id" className="flex-1">
             <Select defaultValue="">
               <option value="" disabled>
-                Escolha o grupo
+                Escolha a tropa
               </option>
               {groups.map((g) => {
                 const free = g.capacity !== null ? g.capacity - g.occupied : null;
@@ -80,11 +80,11 @@ export function DistributeForm({ rows, groups, allowRemove }: { rows: Row[]; gro
                   <option key={g.id} value={g.id} disabled={free !== null && free <= 0}>
                     {g.name} — {g.occupied}
                     {g.capacity !== null ? `/${g.capacity}` : ''}
-                    {free !== null ? (free > 0 ? ` (${free} vaga(s))` : ' (cheio)') : ''}
+                    {free !== null ? (free > 0 ? ` (${free} vaga(s))` : ' (cheia)') : ''}
                   </option>
                 );
               })}
-              {allowRemove ? <option value="remover">Remover do grupo atual</option> : null}
+              {allowRemove ? <option value="remover">Remover da tropa atual</option> : null}
             </Select>
           </Field>
           <SubmitButton disabled={selected.size === 0}>Aplicar</SubmitButton>

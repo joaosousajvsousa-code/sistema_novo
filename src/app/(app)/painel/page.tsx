@@ -86,7 +86,10 @@ export default async function PainelPage() {
 
   const capacity = s.capacity ?? 0;
   const servidores = s.servidores ?? 0;
-  const alerts = s.alerts ?? [];
+  const alerts = (s.alerts ?? []).map((a) => ({
+    ...a,
+    text: a.text.replace(/encontrista\(s\) ainda sem grupo/, 'recruta(s) ainda sem tropa').replace(/encontrista\(s\) sem tamanho/, 'recruta(s) sem tamanho'),
+  }));
   const showTeamsStat = canSeeTeams(access);
 
   return (
@@ -103,7 +106,7 @@ export default async function PainelPage() {
           <>
             <div className="sm:flex-1">
               <Stat
-                label={s.scope_all_teams ? 'Servidores inscritos' : 'Servidores nas suas equipes'}
+                label={s.scope_all_teams ? 'Soldados/Servos inscritos' : 'Soldados/Servos nas suas equipes'}
                 value={servidores}
                 detail={capacity ? `${Math.max(capacity - servidores, 0)} vaga(s) livre(s) de ${capacity}` : 'Sem vagas definidas'}
                 href="/servidores"
@@ -117,11 +120,11 @@ export default async function PainelPage() {
         {s.can_see_encontristas ? (
           <>
             <div className={cn('sm:flex-1', !showTeamsStat ? '' : '')}>
-              <Stat label="Encontristas" value={s.encontristas ?? 0} detail={`${s.grupos ?? 0} grupo(s)`} href="/encontristas" />
+              <Stat label="Recrutas" value={s.encontristas ?? 0} detail={`${s.grupos ?? 0} tropa(s)`} href="/encontristas" />
             </div>
             <div className="max-sm:border-l sm:flex-1">
               <Stat
-                label="Sem grupo"
+                label="Sem tropa"
                 value={s.encontristas_sem_grupo ?? 0}
                 detail={(s.encontristas_sem_grupo ?? 0) > 0 ? 'Aguardando distribuição' : 'Todos distribuídos'}
                 href="/grupos/distribuir"

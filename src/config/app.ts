@@ -1,5 +1,5 @@
 // Nome do sistema: troque aqui ou pela variável NEXT_PUBLIC_APP_NAME.
-export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME?.trim() || 'Acampa';
+export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME?.trim() || 'HOLY CAMP';
 
 // O Supabase Auth exige um e-mail. As pessoas entram só com nome de usuário;
 // por dentro ele vira <usuario>@<domínio interno>. Nenhum e-mail é enviado

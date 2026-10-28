@@ -185,11 +185,11 @@ export async function setEncontristaGroup(_: ActionState, fd: FormData): Promise
   if (!id.success) return fail('Registro inválido.');
   const raw = String(fd.get('group_id') ?? '');
   const group = raw === '' ? null : uuid.safeParse(raw);
-  if (group && !group.success) return fail('Grupo inválido.');
+  if (group && !group.success) return fail('Tropa inválida.');
   const supabase = createClient();
   const { error } = await supabase.rpc('assign_encontristas', { p_ids: [id.data], p_group: group ? group.data : null });
   if (error) return fail(friendlyError(error));
   revalidatePath(`/encontristas/${id.data}`);
   revalidatePath('/grupos');
-  return done(group ? 'Grupo atualizado.' : 'Encontrista removido do grupo.');
+  return done(group ? 'Tropa atualizada.' : 'Recruta removido da tropa.');
 }

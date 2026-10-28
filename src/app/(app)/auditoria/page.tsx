@@ -16,11 +16,11 @@ const ENTITIES: Record<string, string> = {
   service_teams: 'Equipes',
   service_team_coordinators: 'Coordenadores de equipe',
   people: 'Dados pessoais',
-  service_team_memberships: 'Inscrições de servidores',
-  encontristas: 'Fichas de encontristas',
+  service_team_memberships: 'Inscrições de soldados/servos',
+  encontristas: 'Fichas de recrutas',
   participant_health: 'Saúde',
-  participant_groups: 'Grupos',
-  participant_group_assignments: 'Distribuição em grupos',
+  participant_groups: 'Tropas',
+  participant_group_assignments: 'Distribuição em tropas',
 };
 
 const ACTIONS: Record<string, { label: string; tone: 'ok' | 'manto' | 'erro' | 'cirio' | 'neutral' }> = {

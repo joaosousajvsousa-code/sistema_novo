@@ -137,5 +137,5 @@ export async function moveServidor(_: ActionState, fd: FormData): Promise<Action
   if (error) return fail(friendlyError(error));
   revalidatePath(`/servidores/${id.data}`);
   revalidatePath('/servidores');
-  return done('Servidor transferido de equipe.');
+  return done('Soldado/servo transferido de equipe.');
 }

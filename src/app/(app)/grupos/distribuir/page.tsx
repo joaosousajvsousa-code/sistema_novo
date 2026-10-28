@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { ageOn } from '@/lib/format';
 import { DistributeForm } from '../DistributeForm';
 
-export const metadata: Metadata = { title: 'Distribuir encontristas' };
+export const metadata: Metadata = { title: 'Distribuir recrutas' };
 
 const PAGE = 50;
 
@@ -51,15 +51,15 @@ export default async function DistribuirPage({ searchParams }: { searchParams: {
   return (
     <>
       <PageHeader
-        title="Distribuir encontristas"
-        description="Selecione as pessoas e escolha o grupo. Trocar de grupo não cria uma nova ficha."
-        back={{ href: '/grupos', label: 'Grupos' }}
+        title="Distribuir recrutas"
+        description="Selecione as pessoas e escolha a tropa. Trocar de tropa não cria uma nova ficha."
+        back={{ href: '/grupos', label: 'Tropas' }}
       />
       {!groups?.length ? (
         <Notice tone="aviso">
-          Crie pelo menos um grupo antes de distribuir.{' '}
+          Crie pelo menos uma tropa antes de distribuir.{' '}
           <Link href="/grupos" className="font-bold underline">
-            Ir para grupos
+            Ir para tropas
           </Link>
         </Notice>
       ) : (
@@ -67,7 +67,7 @@ export default async function DistribuirPage({ searchParams }: { searchParams: {
           <Tabs
             current={all ? 'todos' : 'sem'}
             items={[
-              { key: 'sem', label: 'Sem grupo', href: base },
+              { key: 'sem', label: 'Sem tropa', href: base },
               { key: 'todos', label: 'Todos (realocar)', href: `${base}?ver=todos` },
             ]}
           />
@@ -84,7 +84,7 @@ export default async function DistribuirPage({ searchParams }: { searchParams: {
           {!rows?.length ? (
             <div className="rounded-lg border border-pedra-200 bg-white">
               <EmptyState
-                title={q ? 'Ninguém encontrado' : all ? 'Nenhum encontrista ativo' : 'Todos os encontristas já têm grupo'}
+                title={q ? 'Ninguém encontrado' : all ? 'Nenhum recruta ativo' : 'Todos os recrutas já têm tropa'}
                 action={!all && !q ? <ButtonLink href={`${base}?ver=todos`} variant="secondary" size="sm">Ver todos para realocar</ButtonLink> : null}
               />
             </div>

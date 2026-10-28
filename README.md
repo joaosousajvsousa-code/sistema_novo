@@ -1,4 +1,7 @@
-# Acampa — Gestão de acampamentos
+# HOLY CAMP — Gestão do acampamento
+
+> Nomenclatura: **Recrutas** (encontristas), **Soldados/Servos** (servidores),
+> **Equipes** (equipes de trabalho) e **Tropas** (grupos dos recrutas).
 
 Sistema web para organizar acampamentos: equipes de serviço com links de
 inscrição, servidores, encontristas, fichas com informações de saúde

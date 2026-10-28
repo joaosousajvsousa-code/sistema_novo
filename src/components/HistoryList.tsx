@@ -7,7 +7,7 @@ const ENTITY: Record<string, string> = {
   service_team_memberships: 'Inscrição',
   encontristas: 'Ficha',
   participant_health: 'Saúde',
-  participant_group_assignments: 'Grupo',
+  participant_group_assignments: 'Tropa',
 };
 
 const FIELD: Record<string, string> = {
@@ -42,8 +42,8 @@ function describe(e: Entry, groups: Record<string, string>, teams: Record<string
   if (e.action === 'VIEW_HEALTH') return 'Consultou as informações de saúde';
   if (e.entity === 'participant_group_assignments') {
     const to = e.after?.group_id as string | undefined;
-    if (e.action === 'DELETE') return 'Removido do grupo';
-    return `Grupo definido: ${(to && groups[to]) || 'outro grupo'}`;
+    if (e.action === 'DELETE') return 'Removido da tropa';
+    return `Tropa definida: ${(to && groups[to]) || 'outra tropa'}`;
   }
   if (e.action === 'INSERT') return `${area}: cadastro criado`;
   if (e.action === 'DELETE') return `${area}: registro removido`;

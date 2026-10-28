@@ -3,10 +3,10 @@ type DbError = { message?: string; code?: string; details?: string } | null | un
 const MESSAGES: Record<string, string> = {
   SEM_VAGAS: 'As vagas desta equipe estão esgotadas.',
   JA_INSCRITO: 'Já existe uma inscrição ativa com esses dados neste acampamento.',
-  JA_CADASTRADO: 'Já existe um encontrista com esse nome e data de nascimento (ou telefone e data) neste acampamento.',
+  JA_CADASTRADO: 'Já existe um recruta com esse nome e data de nascimento (ou telefone e data) neste acampamento.',
   INSCRICOES_FECHADAS: 'As inscrições desta equipe estão fechadas.',
   EQUIPE_NAO_ENCONTRADA: 'Equipe não encontrada.',
-  GRUPO_NAO_ENCONTRADO: 'Grupo não encontrado.',
+  GRUPO_NAO_ENCONTRADO: 'Tropa não encontrada.',
   NAO_ENCONTRADO: 'Registro não encontrado.',
   SEM_PERMISSAO: 'Você não tem permissão para esta ação.',
   SEM_ACAMPAMENTO: 'Nenhum acampamento ativo. Cadastre o acampamento primeiro.',
@@ -17,7 +17,7 @@ const MESSAGES: Record<string, string> = {
   DATA_NASCIMENTO_INVALIDA: 'Data de nascimento inválida.',
   TAMANHO_INVALIDO: 'Escolha um tamanho de camiseta da lista.',
   CONSENTIMENTO_OBRIGATORIO: 'É preciso concordar com o uso dos dados para concluir a inscrição.',
-  GRUPO_CHEIO: 'O grupo não tem vagas suficientes para todos os selecionados.',
+  GRUPO_CHEIO: 'A tropa não tem vagas suficientes para todos os selecionados.',
   LIMITE_MENOR_QUE_INSCRITOS: 'O limite não pode ficar abaixo da quantidade atual de integrantes.',
   ULTIMO_ADMIN: 'O sistema precisa de pelo menos um administrador ativo.',
   SELECAO_GRANDE: 'Selecione no máximo 500 pessoas por vez.',
@@ -34,7 +34,7 @@ export function friendlyError(err: DbError, fallback = 'Não foi possível salva
   if (code) {
     if (code === 'CAMPO_OBRIGATORIO' && err.details) return `Preencha o campo “${err.details}”.`;
     if (code === 'CAMPO_INVALIDO' && err.details) return `Valor inválido no campo “${err.details}”.`;
-    if (code === 'GRUPO_CHEIO' && err.details) return `O grupo só tem ${err.details} vaga(s) livre(s) para os selecionados.`;
+    if (code === 'GRUPO_CHEIO' && err.details) return `A tropa só tem ${err.details} vaga(s) livre(s) para os selecionados.`;
     if (code === 'LIMITE_MENOR_QUE_INSCRITOS' && err.details)
       return `O limite não pode ficar abaixo dos ${err.details} integrantes atuais.`;
     return MESSAGES[code] ?? 'Operação não permitida.';

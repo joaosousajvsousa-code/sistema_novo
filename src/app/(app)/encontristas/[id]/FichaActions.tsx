@@ -8,22 +8,22 @@ export function GroupForm({ id, current, groups }: { id: string; current: string
   return (
     <ActionForm action={setEncontristaGroup} className="flex flex-col gap-2 sm:flex-row sm:items-end">
       <input type="hidden" name="id" value={id} />
-      <Field label={current ? 'Realocar para' : 'Atribuir ao grupo'} name="group_id" className="flex-1">
+      <Field label={current ? 'Realocar para' : 'Atribuir à tropa'} name="group_id" className="flex-1">
         <Select defaultValue={current ?? ''}>
-          <option value="">Sem grupo</option>
+          <option value="">Sem tropa</option>
           {groups.map((g) => {
             const full = g.capacity !== null && g.occupied >= g.capacity && g.id !== current;
             return (
               <option key={g.id} value={g.id} disabled={full}>
                 {g.name}
                 {g.capacity !== null ? ` — ${g.occupied}/${g.capacity}` : ` — ${g.occupied}`}
-                {full ? ' (cheio)' : ''}
+                {full ? ' (cheia)' : ''}
               </option>
             );
           })}
         </Select>
       </Field>
-      <SubmitButton variant="secondary">Salvar grupo</SubmitButton>
+      <SubmitButton variant="secondary">Salvar tropa</SubmitButton>
     </ActionForm>
   );
 }
@@ -37,7 +37,7 @@ export function FichaStatusForm({ id, status }: { id: string; status: string }) 
       <SubmitButton
         variant={cancel ? 'quiet-danger' : 'secondary'}
         className={cancel ? 'border border-erro/30' : undefined}
-        confirmMessage={cancel ? 'Cancelar esta ficha? O encontrista sai das contagens, do grupo e dos relatórios.' : undefined}
+        confirmMessage={cancel ? 'Cancelar esta ficha? O recruta sai das contagens, da tropa e dos relatórios.' : undefined}
       >
         {cancel ? 'Cancelar ficha' : 'Reativar ficha'}
       </SubmitButton>
