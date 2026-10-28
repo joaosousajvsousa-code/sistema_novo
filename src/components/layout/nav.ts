@@ -1,7 +1,7 @@
 import type { Access } from '@/lib/auth';
 import { can, canAny, canSeeServidores, canSeeTeams } from '@/lib/auth';
 
-export type NavIcon = 'painel' | 'equipes' | 'servidores' | 'encontristas' | 'grupos' | 'acampamento' | 'usuarios' | 'auditoria';
+export type NavIcon = 'painel' | 'equipes' | 'servidores' | 'encontristas' | 'grupos' | 'configuracoes' | 'usuarios' | 'auditoria';
 export type NavItem = { href: string; label: string; icon: NavIcon; group: 'operacao' | 'admin' };
 
 export function buildNav(access: Access): NavItem[] {
@@ -10,7 +10,7 @@ export function buildNav(access: Access): NavItem[] {
   if (canAny(access, ['encontristas.ver', 'grupos.gerenciar'])) items.push({ href: '/grupos', label: 'Grupos', icon: 'grupos', group: 'operacao' });
   if (canSeeTeams(access)) items.push({ href: '/equipes', label: 'Equipes', icon: 'equipes', group: 'operacao' });
   if (canSeeServidores(access)) items.push({ href: '/servidores', label: 'Servidores', icon: 'servidores', group: 'operacao' });
-  if (can(access, 'acampamento.gerenciar')) items.push({ href: '/acampamento', label: 'Acampamento', icon: 'acampamento', group: 'admin' });
+  if (can(access, 'acampamento.gerenciar')) items.push({ href: '/configuracoes', label: 'Configurações', icon: 'configuracoes', group: 'admin' });
   if (can(access, 'usuarios.gerenciar')) items.push({ href: '/usuarios', label: 'Usuários', icon: 'usuarios', group: 'admin' });
   if (can(access, 'auditoria.ver')) items.push({ href: '/auditoria', label: 'Auditoria', icon: 'auditoria', group: 'admin' });
   return items;

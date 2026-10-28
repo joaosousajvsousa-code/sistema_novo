@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { KeyRound, LogOut } from 'lucide-react';
 import { requireAccess } from '@/lib/auth';
-import { createClient } from '@/lib/supabase/server';
+import { getActiveCamp } from '@/lib/camp';
 import { buildNav } from '@/components/layout/nav';
 import { MobileNav, SidebarNav } from '@/components/layout/NavLinks';
 import { Logo, LogoMark } from '@/components/Logo';
@@ -16,8 +16,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const access = await requireAccess();
   if (access.mustChangePassword) redirect('/trocar-senha');
 
-  const supabase = createClient();
-  const { data: camp } = await supabase.from('camps').select('name, status, start_date, end_date').eq('is_active', true).maybeSingle();
+  const camp = await getActiveCamp();
   const nav = buildNav(access);
   const status = camp ? CAMP_STATUS[camp.status] : null;
   const firstName = access.fullName.split(' ')[0];
@@ -56,7 +55,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             {camp ? (
               <>
                 <p className="truncate text-sm font-bold leading-tight text-pedra-900 sm:text-base">{camp.name}</p>
-                <p className="truncate text-xs text-pedra-500">{formatDateRange(camp.start_date, camp.end_date) || 'Datas a definir'}</p>
+                <p className="truncate text-xs text-pedra-500">{formatDateRange(camp.start_date, camp.end_date) || 'Datas a definir em Configurações'}</p>
               </>
             ) : (
               <p className="text-sm text-pedra-500">Nenhum acampamento ativo</p>

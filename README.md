@@ -15,7 +15,7 @@ PostgreSQL, login e regras de acesso) · hospedagem na Vercel.
 |---|---|
 | Login | Entrada por **nome de usuário e senha**, sem cadastro público. Senha temporária obrigatoriamente trocada no 1º acesso. Recuperação pela administração. |
 | Usuários e permissões | Perfis Administrador, Coordenador geral, Coordenador de equipe e Voluntário, com permissões extras por pessoa (ex.: ver saúde). Desativar usuário derruba o acesso na hora. |
-| Acampamento | Dados, datas, local, status, tamanhos de camiseta, perguntas extras da inscrição, aviso de privacidade. Arquivamento ao final. |
+| Configurações | O acampamento já vem criado. Dados, datas e local podem ser preenchidos depois; tamanhos de camiseta, perguntas extras da inscrição e aviso de privacidade. |
 | Equipes de serviço | Limite de vagas, coordenadores, abrir/fechar inscrições, link público para WhatsApp e geração de novo link. |
 | Inscrição pública | Formulário por equipe, com consentimento (LGPD). Bloqueia duplicidade e **nunca passa do limite**, mesmo com várias pessoas ao mesmo tempo. |
 | Servidores | Lista com filtros, cadastro interno, edição, cancelamento/reativação, transferência de equipe e histórico. |
@@ -82,8 +82,8 @@ primeiro administrador. Leva uns 20 minutos.
 
 ### 4. Primeiros passos no sistema
 
-1. **Acampamento:** cadastre nome, datas, local e tamanhos de camiseta.
-   Mude o status para *Inscrições abertas* quando quiser liberar os links.
+1. **Configurações:** o acampamento já vem criado, com as inscrições
+   abertas. Preencha nome, datas e local quando estiverem definidos.
 2. **Usuários:** crie as contas da coordenação. O sistema gera a senha
    temporária para você repassar.
 3. **Equipes:** crie cada equipe com o limite de vagas, defina os

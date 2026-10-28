@@ -87,7 +87,7 @@ function parseSignupFields(raw: FormDataEntryValue | null) {
 }
 
 export async function saveCamp(_: ActionState, fd: FormData): Promise<ActionState> {
-  const access = await requirePerm('acampamento.gerenciar');
+  await requirePerm('acampamento.gerenciar');
   const parsed = schema.safeParse({
     name: fd.get('name'),
     description: fd.get('description') ?? '',
@@ -108,31 +108,10 @@ export async function saveCamp(_: ActionState, fd: FormData): Promise<ActionStat
   const id = String(fd.get('id') ?? '');
   const payload = { ...parsed.data, signup_fields: sf.fields };
 
-  if (id) {
-    const { data, error } = await supabase.from('camps').update(payload).eq('id', id).eq('is_active', true).select('id');
-    if (error) return fail(friendlyError(error));
-    if (!data?.length) return fail('Não foi possível salvar: o acampamento não está mais ativo ou você não tem permissão.');
-  } else {
-    const { data: active } = await supabase.from('camps').select('id').eq('is_active', true).maybeSingle();
-    if (active) return fail('Já existe um acampamento ativo. Arquive-o antes de criar outro.');
-    const { error } = await supabase.from('camps').insert({ ...payload, is_active: true, created_by: access.userId });
-    if (error) return fail(friendlyError(error));
-  }
-  revalidatePath('/', 'layout');
-  return done(id ? 'Acampamento salvo.' : 'Acampamento criado.');
-}
-
-export async function archiveCamp(_: ActionState, fd: FormData): Promise<ActionState> {
-  await requirePerm('acampamento.gerenciar');
-  const id = String(fd.get('id') ?? '');
-  const supabase = createClient();
-  const { data, error } = await supabase
-    .from('camps')
-    .update({ status: 'arquivado', is_active: false, archived_at: new Date().toISOString() })
-    .eq('id', id)
-    .select('id');
+  if (!id) return fail('Configurações não encontradas. Recarregue a página.');
+  const { data, error } = await supabase.from('camps').update(payload).eq('id', id).eq('is_active', true).select('id');
   if (error) return fail(friendlyError(error));
-  if (!data?.length) return fail('Não foi possível arquivar.');
+  if (!data?.length) return fail('Não foi possível salvar. Você não tem permissão ou a página está desatualizada.');
   revalidatePath('/', 'layout');
-  return done('Acampamento arquivado. Os registros continuam disponíveis para consulta autorizada.');
+  return done('Configurações salvas.');
 }

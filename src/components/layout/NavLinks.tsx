@@ -8,7 +8,7 @@ import {
   Users,
   UserRound,
   Shapes,
-  Tent,
+  Settings,
   ShieldCheck,
   ScrollText,
   HandHeart,
@@ -26,7 +26,7 @@ const ICONS: Record<NavIcon, React.ComponentType<{ className?: string }>> = {
   grupos: Shapes,
   equipes: HandHeart,
   servidores: Users,
-  acampamento: Tent,
+  configuracoes: Settings,
   usuarios: ShieldCheck,
   auditoria: ScrollText,
 };

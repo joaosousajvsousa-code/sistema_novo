@@ -5,7 +5,7 @@ import { ActionForm, Field, FormActions, SubmitButton } from '@/components/ui/fo
 import { Input, Select, Textarea } from '@/components/ui/input';
 import { FormSection } from '@/components/ui/layout';
 import { SignupFieldsEditor } from './SignupFieldsEditor';
-import { archiveCamp, saveCamp } from './actions';
+import { saveCamp } from './actions';
 
 export type CampData = {
   id: string;
@@ -27,31 +27,31 @@ const DEFAULT_PRIVACY =
   'contato durante o evento e produção de camisetas. Eles não serão compartilhados com terceiros e podem ser corrigidos ' +
   'ou excluídos a pedido do titular junto à coordenação.';
 
-export function CampForm({ camp }: { camp: CampData | null }) {
+export function CampForm({ camp }: { camp: CampData }) {
   return (
     <ActionForm action={saveCamp} className="space-y-6">
-      {camp ? <input type="hidden" name="id" value={camp.id} /> : null}
-      <FormSection title="Dados do acampamento">
-        <Field label="Nome" name="name" required className="sm:col-span-2">
-          <Input defaultValue={camp?.name ?? ''} />
+      <input type="hidden" name="id" value={camp.id} />
+      <FormSection title="Dados do acampamento" description="Preencha quando estiverem definidos. Aparecem no topo do sistema e nos links de inscrição.">
+        <Field label="Nome do acampamento" name="name" required className="sm:col-span-2">
+          <Input defaultValue={camp.name ?? ''} />
         </Field>
         <Field label="Início" name="start_date">
-          <DateInput defaultValue={camp?.start_date ?? ''} />
+          <DateInput defaultValue={camp.start_date ?? ''} />
         </Field>
         <Field label="Término" name="end_date">
-          <DateInput defaultValue={camp?.end_date ?? ''} />
+          <DateInput defaultValue={camp.end_date ?? ''} />
         </Field>
         <Field label="Local" name="location" className="sm:col-span-2">
-          <Input defaultValue={camp?.location ?? ''} />
+          <Input defaultValue={camp.location ?? ''} />
         </Field>
         <Field label="Responsáveis gerais" name="responsaveis" hint="Nomes de quem responde pelo acampamento." className="sm:col-span-2">
-          <Input defaultValue={camp?.responsaveis ?? ''} />
+          <Input defaultValue={camp.responsaveis ?? ''} />
         </Field>
         <Field label="Descrição" name="description" className="sm:col-span-2">
-          <Textarea defaultValue={camp?.description ?? ''} />
+          <Textarea defaultValue={camp.description ?? ''} />
         </Field>
-        <Field label="Status" name="status" hint="Os links de inscrição só aceitam cadastros com “Inscrições abertas”." required>
-          <Select defaultValue={camp?.status ?? 'planejamento'}>
+        <Field label="Situação" name="status" hint="Os links de inscrição só aceitam cadastros com “Inscrições abertas”. “Encerrado” deixa tudo só para consulta." required>
+          <Select defaultValue={camp.status ?? 'planejamento'}>
             <option value="planejamento">Planejamento</option>
             <option value="inscricoes_abertas">Inscrições abertas</option>
             <option value="em_andamento">Em andamento</option>
@@ -61,39 +61,23 @@ export function CampForm({ camp }: { camp: CampData | null }) {
       </FormSection>
       <FormSection title="Camisetas" description="Tamanhos oferecidos para servidores e encontristas.">
         <Field label="Tamanhos" name="shirt_sizes" hint="Separados por vírgula, na ordem em que devem aparecer." required className="sm:col-span-2">
-          <Input defaultValue={(camp?.shirt_sizes ?? ['PP', 'P', 'M', 'G', 'GG', 'XG', 'XXG']).join(', ')} />
+          <Input defaultValue={(camp.shirt_sizes ?? ['PP', 'P', 'M', 'G', 'GG', 'XG', 'XXG']).join(', ')} />
         </Field>
       </FormSection>
       <FormSection title="Inscrição dos servidores" description="Perguntas extras exibidas no link de inscrição de todas as equipes.">
-        <SignupFieldsEditor initial={camp?.signup_fields ?? []} />
+        <SignupFieldsEditor initial={camp.signup_fields ?? []} />
         <Field label="Aviso de privacidade" name="privacy_notice" hint="Aparece no formulário, junto do pedido de consentimento." className="sm:col-span-2">
-          <Textarea rows={4} defaultValue={camp?.privacy_notice ?? DEFAULT_PRIVACY} />
+          <Textarea rows={4} defaultValue={camp.privacy_notice ?? DEFAULT_PRIVACY} />
         </Field>
       </FormSection>
       <FormSection title="Informações operacionais" description="Anotações internas, visíveis só para quem configura o acampamento.">
         <Field label="Anotações" name="operational_notes" className="sm:col-span-2">
-          <Textarea rows={4} defaultValue={camp?.operational_notes ?? ''} />
+          <Textarea rows={4} defaultValue={camp.operational_notes ?? ''} />
         </Field>
       </FormSection>
       <FormActions>
-        <SubmitButton>{camp ? 'Salvar acampamento' : 'Criar acampamento'}</SubmitButton>
+        <SubmitButton>Salvar configurações</SubmitButton>
       </FormActions>
-    </ActionForm>
-  );
-}
-
-export function ArchiveCampForm({ id }: { id: string }) {
-  return (
-    <ActionForm action={archiveCamp}>
-      <input type="hidden" name="id" value={id} />
-      <SubmitButton
-        variant="quiet-danger"
-        className="border border-erro/30"
-        confirmMessage="Arquivar o acampamento? Ele deixa de ser o ativo e todos os registros ficam apenas para consulta."
-        pendingText="Arquivando…"
-      >
-        Arquivar acampamento
-      </SubmitButton>
     </ActionForm>
   );
 }

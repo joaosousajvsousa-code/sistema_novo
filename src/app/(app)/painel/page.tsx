@@ -4,6 +4,7 @@ import { AlertTriangle, Info, CheckCircle2, ChevronRight } from 'lucide-react';
 import { can, canSeeTeams, requireAccess } from '@/lib/auth';
 import { createClient } from '@/lib/supabase/server';
 import { Panel, EmptyState, Notice } from '@/components/ui/layout';
+import { getActiveCamp } from '@/lib/camp';
 import { ButtonLink } from '@/components/ui/button';
 import { TIME_ZONE } from '@/config/app';
 import { cn } from '@/lib/cn';
@@ -49,6 +50,7 @@ function Stat({ label, value, detail, href }: { label: string; value: React.Reac
 
 export default async function PainelPage() {
   const access = await requireAccess();
+  await getActiveCamp();
   const supabase = createClient();
   const { data, error } = await supabase.rpc('dashboard_summary');
   const s = (data ?? { camp: null }) as Summary;
@@ -65,17 +67,9 @@ export default async function PainelPage() {
 
   if (!s.camp) {
     return (
-      <div className="rounded-lg border border-pedra-200 bg-white">
-        <EmptyState
-          title="Nenhum acampamento ativo"
-          description={
-            can(access, 'acampamento.gerenciar')
-              ? 'Cadastre o acampamento para criar equipes, links de inscrição e a lista de encontristas.'
-              : 'Assim que a coordenação cadastrar o acampamento, as informações aparecem aqui.'
-          }
-          action={can(access, 'acampamento.gerenciar') ? <ButtonLink href="/acampamento">Cadastrar acampamento</ButtonLink> : null}
-        />
-      </div>
+      <Notice tone="erro" title="Não foi possível carregar o acampamento">
+        Recarregue a página. Se continuar, confira se a variável SUPABASE_SERVICE_ROLE_KEY está cadastrada na Vercel.
+      </Notice>
     );
   }
 
