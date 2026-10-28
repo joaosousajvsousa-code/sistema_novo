@@ -106,7 +106,14 @@ export async function saveCamp(_: ActionState, fd: FormData): Promise<ActionStat
 
   const supabase = createClient();
   const id = String(fd.get('id') ?? '');
-  const payload = { ...parsed.data, signup_fields: sf.fields };
+  const rawTeam = String(fd.get('leaders_team_id') ?? '');
+  let leaders_team_id: string | null = null;
+  if (rawTeam) {
+    const { data: team } = await supabase.from('service_teams').select('id').eq('id', rawTeam).eq('camp_id', id).maybeSingle();
+    if (!team) return fail('Confira os campos destacados.', { leaders_team_id: 'Escolha uma equipe da lista.' });
+    leaders_team_id = team.id;
+  }
+  const payload = { ...parsed.data, signup_fields: sf.fields, leaders_team_id };
 
   if (!id) return fail('Configurações não encontradas. Recarregue a página.');
   const { data, error } = await supabase.from('camps').update(payload).eq('id', id).eq('is_active', true).select('id');

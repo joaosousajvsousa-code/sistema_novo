@@ -13,7 +13,6 @@ import { optionalText, requiredText, uuid } from '@/lib/validation';
 const schema = z.object({
   name: requiredText('o nome da tropa', 1, 80),
   description: optionalText(1000),
-  responsaveis: optionalText(300),
   capacity: z
     .string()
     .optional()
@@ -23,11 +22,24 @@ const schema = z.object({
   notes: optionalText(2000),
 });
 
+function readLeaders(fd: FormData) {
+  return fd
+    .getAll('leaders')
+    .map(String)
+    .filter((v) => uuid.safeParse(v).success);
+}
+
+async function saveLeaders(groupId: string, fd: FormData) {
+  // Sem a lista no formulário (equipe Tenente inexistente), não mexe nos tenentes.
+  if (!fd.has('leaders') && fd.get('leaders_present') !== '1') return null;
+  const { error } = await createClient().rpc('set_group_leaders', { p_group: groupId, p_memberships: readLeaders(fd) });
+  return error;
+}
+
 function read(fd: FormData) {
   return schema.safeParse({
     name: fd.get('name'),
     description: fd.get('description') ?? '',
-    responsaveis: fd.get('responsaveis') ?? '',
     capacity: fd.get('capacity') ?? '',
     notes: fd.get('notes') ?? '',
   });
@@ -40,12 +52,18 @@ export async function createGroup(_: ActionState, fd: FormData): Promise<ActionS
   const parsed = read(fd);
   if (!parsed.success) return fromZod(parsed.error);
   const supabase = createClient();
-  const { error } = await supabase.from('participant_groups').insert({ ...parsed.data, camp_id: camp.id, created_by: access.userId });
-  if (error) {
-    if (error.code === '23505') return fail('Confira os campos destacados.', { name: 'Já existe uma tropa com este nome.' });
+  const { data: created, error } = await supabase
+    .from('participant_groups')
+    .insert({ ...parsed.data, camp_id: camp.id, created_by: access.userId })
+    .select('id')
+    .single();
+  if (error || !created) {
+    if (error?.code === '23505') return fail('Confira os campos destacados.', { name: 'Já existe uma tropa com este nome.' });
     return fail(friendlyError(error));
   }
+  const leadersError = await saveLeaders(created.id, fd);
   revalidatePath('/grupos');
+  if (leadersError) return fail(`A tropa foi criada, mas os tenentes não foram salvos: ${friendlyError(leadersError)}`);
   return done('Tropa criada.');
 }
 
@@ -64,6 +82,8 @@ export async function updateGroup(_: ActionState, fd: FormData): Promise<ActionS
     return fail(msg);
   }
   if (!data?.length) return fail('Não foi possível salvar a tropa.');
+  const leadersError = await saveLeaders(id.data, fd);
+  if (leadersError) return fail(friendlyError(leadersError));
   revalidatePath(`/grupos/${id.data}`);
   revalidatePath('/grupos');
   return done('Tropa salva.');

@@ -8,6 +8,7 @@ import { PageHeader, Panel, EmptyState, Notice } from '@/components/ui/layout';
 import { ButtonLink } from '@/components/ui/button';
 import { cn } from '@/lib/cn';
 import { NewGroupForm } from './GroupForms';
+import { leaderNames, loadAvailableLeaders, loadGroupLeaders } from '@/lib/tenentes';
 
 export const metadata: Metadata = { title: 'Tropas' };
 
@@ -24,10 +25,13 @@ export default async function GruposPage() {
   }
   const manage = can(access, 'grupos.gerenciar') && campEditable(camp);
   const supabase = createClient();
-  const [{ data: groups, error }, { count: semGrupo }] = await Promise.all([
-    supabase.from('participant_groups_overview').select('id, name, responsaveis, capacity, occupied').eq('camp_id', camp.id).order('name'),
+  const [{ data: groups, error }, { count: semGrupo }, leadersByGroup, leaderTeam] = await Promise.all([
+    supabase.from('participant_groups_overview').select('id, name, capacity, occupied').eq('camp_id', camp.id).order('name'),
     supabase.from('encontristas_list').select('id', { count: 'exact', head: true }).eq('camp_id', camp.id).eq('status', 'ativo').is('group_id', null),
+    loadGroupLeaders(),
+    manage ? supabase.rpc('leaders_team_id', { p_camp: camp.id }) : Promise.resolve({ data: null }),
   ]);
+  const leaderOptions = manage ? (leaderTeam.data ? await loadAvailableLeaders() : null) : null;
   const total = (groups ?? []).reduce((a, g) => a + g.occupied, 0);
 
   return (
@@ -71,7 +75,11 @@ export default async function GruposPage() {
                   <Link href={`/grupos/${g.id}`} className="grid gap-2 px-4 py-3 hover:bg-pedra-100/60 sm:grid-cols-[1fr_200px] sm:items-center sm:gap-6 sm:px-5">
                     <div className="min-w-0">
                       <p className="truncate font-bold">{g.name}</p>
-                      {g.responsaveis ? <p className="truncate text-xs text-pedra-500">{g.responsaveis}</p> : null}
+                      {leadersByGroup[g.id]?.length ? (
+                        <p className="truncate text-xs text-pedra-500">Tenentes: {leaderNames(leadersByGroup[g.id])}</p>
+                      ) : (
+                        <p className="text-xs text-aviso">Sem tenente</p>
+                      )}
                     </div>
                     <div>
                       <p className="text-xs text-pedra-600">
@@ -92,7 +100,7 @@ export default async function GruposPage() {
         )}
         {manage ? (
           <div className="border-t border-pedra-200 p-4 sm:p-5">
-            <NewGroupForm />
+            <NewGroupForm leaders={leaderOptions} />
           </div>
         ) : null}
       </Panel>

@@ -8,6 +8,7 @@ import { PageHeader, Panel, Badge, EmptyState } from '@/components/ui/layout';
 import { ButtonLink } from '@/components/ui/button';
 import { ageOn, formatPhone } from '@/lib/format';
 import { DeleteGroupForm, EditGroupForm, type GroupData } from '../GroupForms';
+import { leaderNames, loadAvailableLeaders, loadGroupLeaders } from '@/lib/tenentes';
 
 export const metadata: Metadata = { title: 'Tropa' };
 
@@ -16,13 +17,17 @@ export default async function GrupoPage({ params }: { params: { id: string } }) 
   const supabase = createClient();
   const { data: g } = await supabase
     .from('participant_groups_overview')
-    .select('id, camp_id, name, description, responsaveis, capacity, notes, occupied')
+    .select('id, camp_id, name, description, capacity, notes, occupied')
     .eq('id', params.id)
     .maybeSingle();
   if (!g) notFound();
   const camp = await getActiveCamp();
   const manage = can(access, 'grupos.gerenciar') && camp?.id === g.camp_id && campEditable(camp);
   const canSee = can(access, 'encontristas.ver');
+  const leadersByGroup = await loadGroupLeaders();
+  const leaders = leadersByGroup[g.id] ?? [];
+  const leaderTeam = manage ? (await supabase.rpc('leaders_team_id', { p_camp: g.camp_id })).data : null;
+  const leaderOptions = manage && leaderTeam ? await loadAvailableLeaders() : null;
   const { data: members } = canSee
     ? await supabase.from('encontristas_list').select('id, full_name, phone, birth_date, shirt_size').eq('group_id', g.id).eq('status', 'ativo').order('full_name')
     : { data: null };
@@ -31,7 +36,7 @@ export default async function GrupoPage({ params }: { params: { id: string } }) 
     <>
       <PageHeader
         title={g.name}
-        description={[g.responsaveis ? `Responsáveis: ${g.responsaveis}` : null, `${g.occupied}${g.capacity ? ` de ${g.capacity}` : ''} integrante(s)`]
+        description={[leaders.length ? `Tenentes: ${leaderNames(leaders)}` : 'Sem tenente', `${g.occupied}${g.capacity ? ` de ${g.capacity}` : ''} integrante(s)`]
           .filter(Boolean)
           .join(' · ')}
         back={{ href: '/grupos', label: 'Tropas' }}
@@ -74,11 +79,15 @@ export default async function GrupoPage({ params }: { params: { id: string } }) 
         <div className="space-y-5">
           {manage ? (
             <Panel title="Dados da tropa">
-              <EditGroupForm g={g as GroupData} />
+              <EditGroupForm g={g as GroupData} leaders={leaderOptions} selected={leaders.map((l) => l.membership_id)} />
             </Panel>
           ) : (
             <Panel title="Sobre a tropa">
-              <p className="whitespace-pre-line text-sm">{g.description || 'Sem descrição.'}</p>
+              <p className="text-sm">
+                <span className="text-pedra-500">Tenentes: </span>
+                <strong>{leaders.length ? leaderNames(leaders) : 'nenhum definido'}</strong>
+              </p>
+              <p className="mt-3 whitespace-pre-line text-sm">{g.description || 'Sem descrição.'}</p>
               {g.notes ? <p className="mt-3 whitespace-pre-line text-sm text-pedra-600">{g.notes}</p> : null}
             </Panel>
           )}

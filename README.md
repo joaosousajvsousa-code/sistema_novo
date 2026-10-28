@@ -45,10 +45,11 @@ primeiro administrador. Leva uns 20 minutos.
    Use um projeto **novo e só para o Acampa**. Escolha a região *South
    America (São Paulo)* e anote a senha do banco.
 2. Quando o projeto terminar de ser criado, abra **SQL Editor** → **New query**.
-3. Copie **todo** o conteúdo do arquivo
-   [`supabase/migrations/0001_fundacao.sql`](supabase/migrations/0001_fundacao.sql),
-   cole e clique em **Run**. Deve aparecer *Success*. Se der erro, nada é
-   salvo pela metade: corrija e rode de novo.
+3. Rode, **em ordem**, cada arquivo da pasta `supabase/migrations/`:
+   copie todo o conteúdo, cole no SQL Editor e clique em **Run**. Deve
+   aparecer *Success*. Se der erro, nada é salvo pela metade.
+   - [`0001_fundacao.sql`](supabase/migrations/0001_fundacao.sql)
+   - [`0002_tenentes.sql`](supabase/migrations/0002_tenentes.sql) — tenentes das tropas
 4. Vá em **Authentication** → **Sign In / Providers**:
    - Deixe o provedor **Email** ativado.
    - **Desative** a opção *Allow new users to sign up*. As contas são

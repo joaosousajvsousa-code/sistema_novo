@@ -10,6 +10,7 @@ import { ageOn, formatDate, formatDateTime, formatPhone, whatsappLink } from '@/
 import { ENCONTRISTA_STATUS, HEALTH_STATUS } from '@/lib/labels';
 import { EditEncontristaForm, EditHealthForm, type EncontristaData, type HealthData } from '../EncontristaForm';
 import { FichaStatusForm, GroupForm } from './FichaActions';
+import { leaderNames, loadGroupLeaders } from '@/lib/tenentes';
 
 export const metadata: Metadata = { title: 'Ficha do recruta' };
 
@@ -73,6 +74,7 @@ export default async function FichaPage({ params, searchParams }: { params: { id
     healthError = Boolean(error);
   }
 
+  const tenentes = tab === 'grupo' && assignment?.group_id ? leaderNames((await loadGroupLeaders())[assignment.group_id]) : '';
   let groups: { id: string; name: string; capacity: number | null; occupied: number }[] = [];
   if (tab === 'grupo' && canGroups) {
     const { data } = await supabase.from('participant_groups_overview').select('id, name, capacity, occupied').eq('camp_id', e.camp_id).order('name');
@@ -231,6 +233,7 @@ export default async function FichaPage({ params, searchParams }: { params: { id
               <>
                 Tropa atual: <strong>{assignment.group.name}</strong>
                 <span className="text-pedra-500"> · desde {formatDateTime(assignment.assigned_at)}</span>
+                <span className="mt-1 block text-pedra-600">Tenentes: {tenentes || 'nenhum definido'}</span>
               </>
             ) : (
               'Ainda sem tropa.'

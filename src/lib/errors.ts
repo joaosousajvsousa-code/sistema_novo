@@ -21,6 +21,9 @@ const MESSAGES: Record<string, string> = {
   LIMITE_MENOR_QUE_INSCRITOS: 'O limite não pode ficar abaixo da quantidade atual de integrantes.',
   ULTIMO_ADMIN: 'O sistema precisa de pelo menos um administrador ativo.',
   SELECAO_GRANDE: 'Selecione no máximo 500 pessoas por vez.',
+  SEM_EQUIPE_TENENTE: 'Não há equipe de tenentes. Crie a equipe “Tenente” em Equipes ou escolha a equipe em Configurações.',
+  TENENTE_INVALIDO: 'Só podem ser tenentes os soldados/servos ativos da equipe de tenentes.',
+  TENENTE_EM_OUTRA_TROPA: 'Um dos tenentes escolhidos já lidera outra tropa.',
 };
 
 export function appErrorCode(err: DbError): string | null {
@@ -34,6 +37,7 @@ export function friendlyError(err: DbError, fallback = 'Não foi possível salva
   if (code) {
     if (code === 'CAMPO_OBRIGATORIO' && err.details) return `Preencha o campo “${err.details}”.`;
     if (code === 'CAMPO_INVALIDO' && err.details) return `Valor inválido no campo “${err.details}”.`;
+    if (code === 'TENENTE_EM_OUTRA_TROPA' && err.details) return `Já lidera outra tropa: ${err.details}. Tire de lá antes de escolher aqui.`;
     if (code === 'GRUPO_CHEIO' && err.details) return `A tropa só tem ${err.details} vaga(s) livre(s) para os selecionados.`;
     if (code === 'LIMITE_MENOR_QUE_INSCRITOS' && err.details)
       return `O limite não pode ficar abaixo dos ${err.details} integrantes atuais.`;

@@ -14,17 +14,20 @@ export default async function ConfiguracoesPage() {
   const { data: camp } = active
     ? await supabase
         .from('camps')
-        .select('id, name, description, start_date, end_date, location, responsaveis, status, shirt_sizes, signup_fields, privacy_notice, operational_notes')
+        .select('id, name, description, start_date, end_date, location, responsaveis, status, shirt_sizes, signup_fields, privacy_notice, operational_notes, leaders_team_id')
         .eq('id', active.id)
         .maybeSingle()
     : { data: null };
+  const { data: teams } = active
+    ? await supabase.from('service_teams').select('id, name').eq('camp_id', active.id).neq('status', 'inativa').order('name')
+    : { data: [] };
 
   return (
     <>
       <PageHeader title="Configurações" description="Dados do acampamento, camisetas e o formulário de inscrição dos soldados/servos." />
       {camp ? (
         <Panel>
-          <CampForm camp={camp as CampData} />
+          <CampForm camp={camp as CampData} teams={teams ?? []} />
         </Panel>
       ) : (
         <Notice tone="erro" title="Não foi possível carregar as configurações">

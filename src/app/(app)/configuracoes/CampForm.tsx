@@ -20,6 +20,7 @@ export type CampData = {
   signup_fields: { label: string; type: 'text' | 'select'; required: boolean; options: string[] }[];
   privacy_notice: string | null;
   operational_notes: string | null;
+  leaders_team_id: string | null;
 };
 
 const DEFAULT_PRIVACY =
@@ -27,7 +28,7 @@ const DEFAULT_PRIVACY =
   'contato durante o evento e produção de camisetas. Eles não serão compartilhados com terceiros e podem ser corrigidos ' +
   'ou excluídos a pedido do titular junto à coordenação.';
 
-export function CampForm({ camp }: { camp: CampData }) {
+export function CampForm({ camp, teams }: { camp: CampData; teams: { id: string; name: string }[] }) {
   return (
     <ActionForm action={saveCamp} className="space-y-6">
       <input type="hidden" name="id" value={camp.id} />
@@ -62,6 +63,18 @@ export function CampForm({ camp }: { camp: CampData }) {
       <FormSection title="Camisetas" description="Tamanhos oferecidos para soldados/servos e recrutas.">
         <Field label="Tamanhos" name="shirt_sizes" hint="Separados por vírgula, na ordem em que devem aparecer." required className="sm:col-span-2">
           <Input defaultValue={(camp.shirt_sizes ?? ['PP', 'P', 'M', 'G', 'GG', 'XG', 'XXG']).join(', ')} />
+        </Field>
+      </FormSection>
+      <FormSection title="Tenentes" description="Os tenentes das tropas são escolhidos entre os integrantes desta equipe.">
+        <Field label="Equipe dos tenentes" name="leaders_team_id" hint="No automático, o sistema usa a equipe cujo nome começa com “Tenente”." className="sm:col-span-2">
+          <Select defaultValue={camp.leaders_team_id ?? ''}>
+            <option value="">Automático (equipe “Tenente”)</option>
+            {teams.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name}
+              </option>
+            ))}
+          </Select>
         </Field>
       </FormSection>
       <FormSection title="Inscrição dos soldados/servos" description="Perguntas extras exibidas no link de inscrição de todas as equipes.">
