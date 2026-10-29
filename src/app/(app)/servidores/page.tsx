@@ -8,11 +8,12 @@ import { PageHeader, Badge, EmptyState, Notice, Pagination } from '@/components/
 import { ButtonLink } from '@/components/ui/button';
 import { Input, Select } from '@/components/ui/input';
 import { formatPhone, onlyDigits } from '@/lib/format';
+import { PAYMENT_STATUS } from '@/lib/labels';
 import { PAGE_SIZE } from '@/config/app';
 
 export const metadata: Metadata = { title: 'Soldados/Servos' };
 
-type SP = { q?: string; equipe?: string; status?: string; tamanho?: string; pagina?: string };
+type SP = { q?: string; equipe?: string; status?: string; tamanho?: string; pagamento?: string; pagina?: string };
 
 export default async function ServidoresPage({ searchParams }: { searchParams: SP }) {
   const access = await requireCheck(canSeeServidores);
@@ -32,12 +33,14 @@ export default async function ServidoresPage({ searchParams }: { searchParams: S
 
   let query = supabase
     .from('servidores_list')
-    .select('id, full_name, phone, team_id, team_name, shirt_size, status', { count: 'exact' })
+    .select('id, full_name, phone, team_id, team_name, shirt_size, status, payment_status', { count: 'exact' })
     .eq('camp_id', camp.id)
     .order('full_name')
     .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1);
   if (status) query = query.eq('status', status);
   if (searchParams.equipe) query = query.eq('team_id', searchParams.equipe);
+  if (searchParams.pagamento === 'a_conferir') query = query.in('payment_status', ['comprovante_enviado', 'em_analise']);
+  else if (searchParams.pagamento && PAYMENT_STATUS[searchParams.pagamento]) query = query.eq('payment_status', searchParams.pagamento);
   if (searchParams.tamanho === 'sem') query = query.is('shirt_size', null);
   else if (searchParams.tamanho) query = query.eq('shirt_size', searchParams.tamanho);
   if (q) {
@@ -62,7 +65,7 @@ export default async function ServidoresPage({ searchParams }: { searchParams: S
   const canCreate =
     campEditable(camp) && (can(access, 'servidores.editar_todos') || can(access, 'equipes.gerenciar') || access.coordinatedTeamIds.length > 0);
   const params = new URLSearchParams(Object.entries(searchParams).filter(([k, v]) => v && k !== 'pagina') as [string, string][]);
-  const hasFilters = Boolean(q || searchParams.equipe || searchParams.tamanho || searchParams.status);
+  const hasFilters = Boolean(q || searchParams.equipe || searchParams.tamanho || searchParams.status || searchParams.pagamento);
 
   return (
     <>
@@ -77,7 +80,7 @@ export default async function ServidoresPage({ searchParams }: { searchParams: S
           ) : null
         }
       />
-      <form className="mb-4 grid gap-2 sm:grid-cols-[1fr_180px_140px_140px_auto]" role="search">
+      <form className="mb-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-[1fr_170px_130px_120px_150px_auto]" role="search">
         <label htmlFor="q" className="sr-only">
           Buscar por nome ou telefone
         </label>
@@ -113,6 +116,18 @@ export default async function ServidoresPage({ searchParams }: { searchParams: S
           <option value="cancelada">Canceladas</option>
           <option value="todas">Todas</option>
         </Select>
+        <label htmlFor="pagamento" className="sr-only">
+          Pagamento
+        </label>
+        <Select id="pagamento" name="pagamento" defaultValue={searchParams.pagamento ?? ''}>
+          <option value="">Qualquer pagamento</option>
+          <option value="a_conferir">A conferir</option>
+          {Object.entries(PAYMENT_STATUS).map(([k, v]) => (
+            <option key={k} value={k}>
+              {v.label}
+            </option>
+          ))}
+        </Select>
         <button className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-manto px-4 text-sm font-bold text-white">
           <Search className="h-4 w-4" /> Filtrar
         </button>
@@ -129,10 +144,10 @@ export default async function ServidoresPage({ searchParams }: { searchParams: S
           />
         ) : (
           <>
-            <div className="hidden grid-cols-[1fr_160px_160px_90px] gap-4 border-b border-pedra-200 px-5 py-2 text-xs text-pedra-500 md:grid">
+            <div className="hidden grid-cols-[1fr_160px_260px_90px] gap-4 border-b border-pedra-200 px-5 py-2 text-xs text-pedra-500 md:grid">
               <span>Nome</span>
               <span>Telefone</span>
-              <span>Equipe</span>
+              <span>Equipe · pagamento</span>
               <span>Camiseta</span>
             </div>
             <ul className="divide-y divide-pedra-100">
@@ -140,7 +155,7 @@ export default async function ServidoresPage({ searchParams }: { searchParams: S
                 <li key={r.id}>
                   <Link
                     href={`/servidores/${r.id}`}
-                    className="grid grid-cols-[1fr_auto] gap-x-3 gap-y-0.5 px-4 py-3 hover:bg-pedra-100/60 md:grid-cols-[1fr_160px_160px_90px] md:items-center md:gap-4 md:px-5"
+                    className="grid grid-cols-[1fr_auto] gap-x-3 gap-y-0.5 px-4 py-3 hover:bg-pedra-100/60 md:grid-cols-[1fr_160px_260px_90px] md:items-center md:gap-4 md:px-5"
                   >
                     <span className="truncate font-bold">
                       {r.full_name}
@@ -152,7 +167,12 @@ export default async function ServidoresPage({ searchParams }: { searchParams: S
                     </span>
                     <span className="text-right text-sm md:order-last md:text-left">{r.shirt_size ?? <Badge tone="aviso">—</Badge>}</span>
                     <span className="text-sm text-pedra-600">{formatPhone(r.phone)}</span>
-                    <span className="truncate text-sm text-pedra-600 max-md:col-span-2">{r.team_name}</span>
+                    <span className="truncate text-sm text-pedra-600 max-md:col-span-2">
+                      {r.team_name}
+                      <Badge className="ml-2" tone={PAYMENT_STATUS[r.payment_status]?.tone}>
+                        {PAYMENT_STATUS[r.payment_status]?.label}
+                      </Badge>
+                    </span>
                   </Link>
                 </li>
               ))}

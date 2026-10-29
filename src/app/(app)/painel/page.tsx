@@ -96,7 +96,11 @@ export default async function PainelPage() {
     schedule.delay >= 5
       ? [{ level: 'warning' as const, kind: 'programacao_atrasada', text: `Cronograma com ${formatDelay(schedule.delay)}`, href: '/cronograma' }]
       : [];
-  const alerts = [...scheduleAlert, ...(s.alerts ?? [])].map((a) => ({
+  const reviewCount = can(access, 'financeiro.gerenciar') ? Number((await supabase.rpc('payments_to_review')).data ?? 0) : 0;
+  const paymentAlert = reviewCount
+    ? [{ level: 'warning' as const, kind: 'pagamentos_a_conferir', text: `${reviewCount} pagamento(s) aguardando conferência`, href: '/financeiro/pagamentos?status=a_conferir' }]
+    : [];
+  const alerts = [...scheduleAlert, ...paymentAlert, ...(s.alerts ?? [])].map((a) => ({
     ...a,
     text: a.text.replace(/encontrista\(s\) ainda sem grupo/, 'recruta(s) ainda sem tropa').replace(/encontrista\(s\) sem tamanho/, 'recruta(s) sem tamanho'),
   }));

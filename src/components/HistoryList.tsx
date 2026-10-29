@@ -32,10 +32,15 @@ const FIELD: Record<string, string> = {
   medications_status: 'medicamentos',
   health_notes: 'observações de saúde',
   group_id: 'grupo',
-  payment_status: 'pagamento',
+  payment_status: 'situação do pagamento',
+  payment_expected: 'valor combinado',
+  payment_paid: 'valor pago',
+  payment_date: 'data do pagamento',
+  payment_method: 'forma de pagamento',
+  payment_notes: 'observações do pagamento',
 };
 
-const HIDDEN = new Set(['id', 'camp_id', 'person_id', 'created_at', 'created_by', 'updated_by', 'assigned_at', 'assigned_by', 'encontrista_id', 'consent_at', 'source', 'cancelled_by']);
+const HIDDEN = new Set(['id', 'camp_id', 'person_id', 'created_at', 'created_by', 'updated_by', 'assigned_at', 'assigned_by', 'encontrista_id', 'consent_at', 'source', 'cancelled_by', 'payment_updated_at', 'payment_confirmed_at', 'payment_confirmed_by']);
 
 function describe(e: Entry, groups: Record<string, string>, teams: Record<string, string>) {
   const area = ENTITY[e.entity] ?? e.entity;

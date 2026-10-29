@@ -10,6 +10,7 @@ import {
   UserRound,
   Shapes,
   Settings,
+  Wallet,
   ShieldCheck,
   ScrollText,
   HandHeart,
@@ -29,6 +30,7 @@ const ICONS: Record<NavIcon, React.ComponentType<{ className?: string }>> = {
   equipes: HandHeart,
   servidores: Users,
   configuracoes: Settings,
+  financeiro: Wallet,
   usuarios: ShieldCheck,
   auditoria: ScrollText,
 };

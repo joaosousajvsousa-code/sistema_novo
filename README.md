@@ -26,6 +26,7 @@ PostgreSQL, login e regras de acesso) · hospedagem na Vercel.
 | Saúde | Alergias e medicamentos com a opção "não informado". Só quem tem permissão vê, e **cada consulta fica registrada**. |
 | Grupos | Grupos com limite opcional, distribuição em lote e realocação sem duplicar a ficha. |
 | Cronograma | Lista do cronograma por dia, colada de uma vez ou momento a momento. Um tique marca que o momento começou (o anterior é concluído). Mostra agora/próximo, atraso, previsão dos seguintes e permite empurrar horários guardando o original. Atualiza sozinho a cada 15 s. |
+| Financeiro | Só com a permissão “Financeiro”. Pagamento na ficha de cada soldado/servo (valor combinado e pago, comprovante, conferência, isenção, estorno); receitas e despesas com categorias, equipe e comprovante; orçamento por categoria; saldo bancário informado x livro-caixa; exportação Excel. |
 | Painel | Indicadores e alertas calculados dos dados reais (equipes lotadas, sem coordenador, encontristas sem grupo, camisetas sem tamanho). |
 | Auditoria | Registro de todas as alterações importantes. Ninguém consegue editar ou apagar. |
 
@@ -52,6 +53,7 @@ primeiro administrador. Leva uns 20 minutos.
    - [`0001_fundacao.sql`](supabase/migrations/0001_fundacao.sql)
    - [`0002_tenentes.sql`](supabase/migrations/0002_tenentes.sql) — tenentes das tropas
    - [`0003_cronograma.sql`](supabase/migrations/0003_cronograma.sql) — cronograma ao vivo
+   - [`0004_financeiro.sql`](supabase/migrations/0004_financeiro.sql) — financeiro e comprovantes
 4. Vá em **Authentication** → **Sign In / Providers**:
    - Deixe o provedor **Email** ativado.
    - **Desative** a opção *Allow new users to sign up*. As contas são

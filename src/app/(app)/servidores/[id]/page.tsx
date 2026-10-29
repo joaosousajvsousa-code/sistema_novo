@@ -8,7 +8,11 @@ import { campEditable, getActiveCamp } from '@/lib/camp';
 import { PageHeader, Panel, Badge, DataList, Notice, Tabs } from '@/components/ui/layout';
 import { HistoryList } from '@/components/HistoryList';
 import { ageOn, formatDate, formatDateTime, formatPhone, whatsappLink } from '@/lib/format';
-import { MEMBERSHIP_STATUS, SOURCE_LABEL } from '@/lib/labels';
+import { MEMBERSHIP_STATUS, PAYMENT_METHOD, PAYMENT_STATUS, SOURCE_LABEL } from '@/lib/labels';
+import { formatBRL } from '@/lib/money';
+import { listDocuments } from '@/lib/documents';
+import { DocumentList } from '@/components/DocumentList';
+import { PaymentForm, PaymentReview, type PaymentData } from '../PaymentForms';
 import { EditServidorForm, type ServidorData } from '../ServidorForm';
 import { MoveForm, StatusForm } from './ServidorActions';
 
@@ -20,7 +24,7 @@ export default async function ServidorPage({ params, searchParams }: { params: {
   const { data: m } = await supabase
     .from('service_team_memberships')
     .select(
-      'id, camp_id, team_id, person_id, status, shirt_size, extra_answers, admin_notes, source, consent_at, created_at, cancelled_at, cancel_reason, team:service_teams(name), person:people(full_name, phone, birth_date)',
+      'id, camp_id, team_id, person_id, status, shirt_size, extra_answers, admin_notes, source, consent_at, created_at, cancelled_at, cancel_reason, payment_status, payment_expected, payment_paid, payment_date, payment_method, payment_notes, payment_confirmed_at, payment_updated_at, confirmer:profiles!service_team_memberships_payment_confirmed_by_fkey(full_name), team:service_teams(name), person:people(full_name, phone, birth_date)',
     )
     .eq('id', params.id)
     .maybeSingle();
@@ -32,7 +36,19 @@ export default async function ServidorPage({ params, searchParams }: { params: {
   const editable = camp?.id === m.camp_id && campEditable(camp);
   const canEdit = editable && (can(access, 'servidores.editar_todos') || coordinatesTeam(access, m.team_id));
   const canMove = editable && can(access, 'equipes.gerenciar');
-  const tab = searchParams.aba === 'historico' ? 'historico' : searchParams.aba === 'editar' && canEdit ? 'editar' : 'dados';
+  const canPayment = can(access, 'financeiro.gerenciar') || coordinatesTeam(access, m.team_id);
+  const isFinance = can(access, 'financeiro.gerenciar');
+  const tab =
+    searchParams.aba === 'historico'
+      ? 'historico'
+      : searchParams.aba === 'editar' && canEdit
+        ? 'editar'
+        : searchParams.aba === 'pagamento' && canPayment
+          ? 'pagamento'
+          : 'dados';
+  const docs = tab === 'pagamento' ? await listDocuments('pagamento', m.id) : [];
+  const confirmer = m.confirmer as unknown as { full_name: string } | null;
+  const payLocked = !isFinance && ['confirmado', 'estornado'].includes(m.payment_status);
   const fields = camp?.signup_fields ?? [];
   const st = MEMBERSHIP_STATUS[m.status];
   const wa = whatsappLink(person.phone);
@@ -78,6 +94,7 @@ export default async function ServidorPage({ params, searchParams }: { params: {
         current={tab}
         items={[
           { key: 'dados', label: 'Dados', href: base },
+          ...(canPayment ? [{ key: 'pagamento', label: 'Pagamento', href: `${base}?aba=pagamento` }] : []),
           ...(canEdit ? [{ key: 'editar', label: 'Editar', href: `${base}?aba=editar` }] : []),
           { key: 'historico', label: 'Histórico', href: `${base}?aba=historico` },
         ]}
@@ -91,6 +108,45 @@ export default async function ServidorPage({ params, searchParams }: { params: {
             fields={fields}
           />
         </Panel>
+      ) : tab === 'pagamento' ? (
+        <div className="grid gap-5 lg:grid-cols-[1fr_340px]">
+          <div className="space-y-5">
+            <Panel title="Pagamento" actions={<Badge tone={PAYMENT_STATUS[m.payment_status]?.tone}>{PAYMENT_STATUS[m.payment_status]?.label}</Badge>}>
+              <DataList
+                items={[
+                  { label: 'Valor combinado', value: m.payment_expected !== null ? formatBRL(m.payment_expected) : null },
+                  { label: 'Valor pago', value: m.payment_paid !== null ? formatBRL(m.payment_paid) : null },
+                  { label: 'Data do pagamento', value: m.payment_date ? formatDate(m.payment_date) : null },
+                  { label: 'Forma', value: m.payment_method ? PAYMENT_METHOD[m.payment_method] : null },
+                  ...(m.payment_status === 'confirmado'
+                    ? [{ label: 'Confirmado por', value: `${confirmer?.full_name ?? '—'} em ${formatDateTime(m.payment_confirmed_at)}` }]
+                    : []),
+                  ...(m.payment_expected !== null && m.payment_paid !== null && Number(m.payment_paid) < Number(m.payment_expected)
+                    ? [{ label: 'Falta pagar', value: <span className="text-aviso">{formatBRL(Number(m.payment_expected) - Number(m.payment_paid))}</span> }]
+                    : []),
+                ]}
+              />
+              {m.payment_notes ? <p className="mt-4 whitespace-pre-line border-t border-pedra-100 pt-4 text-sm">{m.payment_notes}</p> : null}
+            </Panel>
+            {editable && !payLocked ? (
+              <Panel title="Registrar pagamento">
+                <PaymentForm data={m as unknown as PaymentData} />
+              </Panel>
+            ) : payLocked ? (
+              <Notice>Pagamento já conferido pelo financeiro. Para corrigir, fale com quem cuida do financeiro.</Notice>
+            ) : null}
+          </div>
+          <div className="space-y-5">
+            {isFinance && editable ? (
+              <Panel title="Conferência do financeiro" description="Só pagamentos confirmados entram nas receitas.">
+                <PaymentReview id={m.id} status={m.payment_status} />
+              </Panel>
+            ) : null}
+            <Panel title="Comprovantes" description="Abrem por um link temporário.">
+              <DocumentList docs={docs} />
+            </Panel>
+          </div>
+        </div>
       ) : tab === 'historico' ? (
         <Panel title="Histórico de alterações">
           <HistoryList entries={history} teams={teamNames} />

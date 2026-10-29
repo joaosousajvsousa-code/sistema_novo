@@ -49,3 +49,11 @@ export const ROLE_LABEL: Record<string, string> = {
   coord_equipe: 'Coordenador de equipe',
   voluntario: 'Voluntário',
 };
+
+export const PAYMENT_METHOD: Record<string, string> = {
+  pix: 'Pix',
+  dinheiro: 'Dinheiro',
+  cartao: 'Cartão',
+  transferencia: 'Transferência',
+  outro: 'Outro',
+};

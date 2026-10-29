@@ -14,7 +14,8 @@ export type Permission =
   | 'encontristas.editar'
   | 'saude.ver'
   | 'grupos.gerenciar'
-  | 'programacao.gerenciar';
+  | 'programacao.gerenciar'
+  | 'financeiro.gerenciar';
 
 export type Access = {
   userId: string;

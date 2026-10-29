@@ -9,6 +9,10 @@ const securityHeaders = [
 module.exports = {
   reactStrictMode: true,
   poweredByHeader: false,
+  experimental: {
+    // Comprovantes de até 5 MB (fotos já chegam reduzidas pelo navegador).
+    serverActions: { bodySizeLimit: '6mb' },
+  },
   async headers() {
     return [{ source: '/:path*', headers: securityHeaders }];
   },
