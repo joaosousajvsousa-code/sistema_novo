@@ -45,6 +45,12 @@ export function friendlyError(err: DbError, fallback = 'Não foi possível salva
     return MESSAGES[code] ?? 'Operação não permitida.';
   }
   switch (err.code) {
+    // Tabela ou função inexistente: falta rodar uma migração no Supabase.
+    case 'PGRST205':
+    case 'PGRST202':
+    case '42P01':
+    case '42883':
+      return 'O banco de dados ainda não foi atualizado para esta função. Rode no Supabase (SQL Editor) o arquivo de migração mais recente da pasta supabase/migrations.';
     case '23505':
       return 'Já existe um registro com esses dados.';
     case '23503':
