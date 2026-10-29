@@ -60,7 +60,6 @@ export default async function FinanceiroPage() {
   const inReview = (p.comprovante_enviado?.paid ?? 0) + (p.em_analise?.paid ?? 0);
   const diff = s.bank_balance !== null ? Number(s.bank_balance) - Number(s.balance) : null;
   const maxExpense = Math.max(1, ...s.expense_by_category.map((c) => Math.max(Number(c.total), Number(c.budget ?? 0))));
-  const maxTeam = Math.max(1, ...s.expense_by_team.map((t) => Number(t.total)));
 
   return (
     <>
@@ -117,7 +116,7 @@ export default async function FinanceiroPage() {
       </section>
 
       <div className="grid gap-5 lg:grid-cols-2">
-        <Panel title="Despesas por categoria" description="Comparadas com o orçamento, quando definido." bodyClassName="p-0 sm:p-0">
+        <Panel title="Despesas por equipe e categoria" description="Comparadas com o orçamento, quando definido." bodyClassName="p-0 sm:p-0">
           {!s.expense_by_category.length ? (
             <EmptyState title="Nenhuma despesa lançada" action={<ButtonLink href="/financeiro/lancamentos/novo?tipo=despesa" size="sm">Lançar despesa</ButtonLink>} />
           ) : (
@@ -160,22 +159,6 @@ export default async function FinanceiroPage() {
               ))}
             </ul>
           </Panel>
-
-          {s.expense_by_team.length ? (
-            <Panel title="Despesas por equipe" bodyClassName="p-0 sm:p-0">
-              <ul className="divide-y divide-pedra-100">
-                {s.expense_by_team.map((t) => (
-                  <li key={t.name} className="px-4 py-3 sm:px-5">
-                    <div className="flex justify-between gap-3 text-sm">
-                      <span className="font-bold">{t.name}</span>
-                      <span>{formatBRL(t.total)}</span>
-                    </div>
-                    <Bar value={Number(t.total)} max={maxTeam} />
-                  </li>
-                ))}
-              </ul>
-            </Panel>
-          ) : null}
 
           <Panel title="Saldo no banco" description="Informe o saldo do extrato para comparar com o livro-caixa.">
             {s.bank_balance === null ? (

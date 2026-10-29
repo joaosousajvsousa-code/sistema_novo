@@ -16,7 +16,7 @@ export default async function NovoLancamentoPage({ searchParams }: { searchParam
   const kind = searchParams.tipo === 'receita' ? 'receita' : 'despesa';
   const supabase = createClient();
   const [{ data: cats }, { data: teams }] = await Promise.all([
-    supabase.from('finance_categories').select('id, name').eq('kind', kind).eq('active', true).order('sort').order('name'),
+    supabase.from('finance_categories').select('id, name').eq('kind', kind).eq('active', true).order('name'),
     supabase.from('service_teams').select('id, name').eq('camp_id', camp.id).neq('status', 'inativa').order('name'),
   ]);
   return (

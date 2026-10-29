@@ -51,7 +51,7 @@ export function EntryForm({ entry, categories, teams, today }: { entry: EntryDat
         <Field label="Data" name="entry_date" required>
           <DateInput defaultValue={entry.entry_date ?? today} />
         </Field>
-        <Field label={despesa ? 'Categoria' : 'Origem'} name="category_id" required>
+        <Field label={despesa ? 'Equipe / categoria' : 'Origem'} name="category_id" required>
           <Select defaultValue={entry.category_id ?? ''}>
             <option value="" disabled>
               Selecione
@@ -63,20 +63,6 @@ export function EntryForm({ entry, categories, teams, today }: { entry: EntryDat
             ))}
           </Select>
         </Field>
-        {despesa ? (
-          <Field label="Equipe relacionada" name="team_id" hint="Opcional. Para ver os gastos por equipe.">
-            <Select defaultValue={entry.team_id ?? ''}>
-              <option value="">Geral (sem equipe)</option>
-              {teams.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.name}
-                </option>
-              ))}
-            </Select>
-          </Field>
-        ) : (
-          <div />
-        )}
         <Field label={despesa ? 'Responsável pela compra' : 'Quem doou / responsável'} name="responsible">
           <Input defaultValue={entry.responsible ?? ''} />
         </Field>

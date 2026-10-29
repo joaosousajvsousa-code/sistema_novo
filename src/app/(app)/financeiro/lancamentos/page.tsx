@@ -28,7 +28,7 @@ export default async function LancamentosPage({ searchParams }: { searchParams: 
 
   let q = supabase
     .from('finance_entries')
-    .select('id, kind, description, amount, entry_date, responsible, cancelled_at, category:finance_categories(name), team:service_teams(name)', { count: 'exact' })
+    .select('id, kind, description, amount, entry_date, responsible, cancelled_at, category:finance_categories(name)', { count: 'exact' })
     .eq('camp_id', camp.id)
     .order('entry_date', { ascending: false })
     .order('created_at', { ascending: false })
@@ -86,7 +86,7 @@ export default async function LancamentosPage({ searchParams }: { searchParams: 
           Categoria
         </label>
         <Select id="categoria" name="categoria" defaultValue={searchParams.categoria ?? ''}>
-          <option value="">Todas as categorias</option>
+          <option value="">Todas as equipes e categorias</option>
           {(cats ?? []).map((c) => (
             <option key={c.id} value={c.id}>
               {c.kind === 'receita' ? 'Receita · ' : 'Despesa · '}
@@ -129,7 +129,6 @@ export default async function LancamentosPage({ searchParams }: { searchParams: 
           <ul className="divide-y divide-pedra-100">
             {rows.map((r) => {
               const cat = r.category as unknown as { name: string } | null;
-              const team = r.team as unknown as { name: string } | null;
               const receita = r.kind === 'receita';
               return (
                 <li key={r.id}>
@@ -141,7 +140,6 @@ export default async function LancamentosPage({ searchParams }: { searchParams: 
                       </span>
                       <span className="block text-xs text-pedra-500">
                         {formatDate(r.entry_date)} · {cat?.name}
-                        {team ? ` · ${team.name}` : ''}
                         {r.responsible ? ` · ${r.responsible}` : ''}
                       </span>
                     </span>

@@ -54,6 +54,7 @@ primeiro administrador. Leva uns 20 minutos.
    - [`0002_tenentes.sql`](supabase/migrations/0002_tenentes.sql) — tenentes das tropas
    - [`0003_cronograma.sql`](supabase/migrations/0003_cronograma.sql) — cronograma ao vivo
    - [`0004_financeiro.sql`](supabase/migrations/0004_financeiro.sql) — financeiro e comprovantes
+   - [`0005_categorias_equipes.sql`](supabase/migrations/0005_categorias_equipes.sql) — equipes viram categorias de despesa
 4. Vá em **Authentication** → **Sign In / Providers**:
    - Deixe o provedor **Email** ativado.
    - **Desative** a opção *Allow new users to sign up*. As contas são
