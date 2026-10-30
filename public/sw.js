@@ -1,7 +1,7 @@
 // Service worker do HOLY CAMP: o sistema sempre busca dados atualizados na
 // internet. Sem conexão, mostra uma página avisando. Nada de dados pessoais
 // fica guardado no aparelho.
-const CACHE = 'holy-camp-v2';
+const CACHE = 'holy-camp-v3';
 const OFFLINE = '/offline.html';
 const ASSETS = [OFFLINE, '/app/icon-192.png', '/textura-topografica.svg'];
 
