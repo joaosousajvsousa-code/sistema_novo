@@ -15,7 +15,7 @@ const MOTIVOS: Record<string, string> = {
 export default function LoginPage({ searchParams }: { searchParams: { voltar?: string; motivo?: string } }) {
   const motivo = searchParams.motivo ? MOTIVOS[searchParams.motivo] : null;
   return (
-    <AuthFrame title="Entrar" subtitle="Use o usuário e a senha que a coordenação criou para você.">
+    <AuthFrame>
       {!supabaseConfigured() ? (
         <Notice tone="aviso" title="Sistema ainda não configurado">
           Faltam as variáveis do Supabase (NEXT_PUBLIC_SUPABASE_URL e NEXT_PUBLIC_SUPABASE_ANON_KEY). Veja o passo a passo no README do projeto.
