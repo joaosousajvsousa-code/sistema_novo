@@ -9,7 +9,7 @@ export default function SemPermissaoPage() {
         icon={<Lock className="h-8 w-8" />}
         title="Você não tem acesso a esta área"
         description="Se precisar dela para o seu serviço no acampamento, peça a permissão a um administrador."
-        action={<ButtonLink href="/painel" variant="secondary">Ir para o painel</ButtonLink>}
+        action={<ButtonLink href="/inicio" variant="secondary">Voltar ao início</ButtonLink>}
       />
     </div>
   );

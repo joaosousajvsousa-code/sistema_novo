@@ -25,7 +25,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     <div className="min-h-dvh lg:pl-64">
       <aside className="fixed inset-y-0 left-0 z-20 hidden w-64 flex-col bg-manto lg:flex">
         <div className="flex h-16 items-center px-5">
-          <Link href="/painel" aria-label="Ir para o painel">
+          <Link href="/inicio" aria-label="Ir para o início">
             <Logo light />
           </Link>
         </div>
@@ -48,7 +48,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
       <header className="sticky top-0 z-10 border-b border-pedra-200 bg-white/95 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-6xl items-center gap-3 px-4 sm:h-16 sm:px-6">
-          <Link href="/painel" className="lg:hidden" aria-label="Ir para o painel">
+          <Link href="/inicio" className="lg:hidden" aria-label="Ir para o início">
             <LogoMark />
           </Link>
           <div className="min-w-0 flex-1">

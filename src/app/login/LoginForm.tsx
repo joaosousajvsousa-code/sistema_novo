@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { PasswordInput } from '@/components/auth/PasswordInput';
 
 function safeRedirect(path: string | null) {
-  if (!path || !path.startsWith('/') || path.startsWith('//') || path.startsWith('/login')) return '/painel';
+  if (!path || !path.startsWith('/') || path.startsWith('//') || path.startsWith('/login')) return '/inicio';
   return path;
 }
 

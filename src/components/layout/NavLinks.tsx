@@ -4,7 +4,7 @@ import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  LayoutDashboard,
+  House,
   CalendarClock,
   Users,
   UserRound,
@@ -22,8 +22,8 @@ import {
 import { cn } from '@/lib/cn';
 import type { NavIcon, NavItem } from './nav';
 
-const ICONS: Record<NavIcon, React.ComponentType<{ className?: string }>> = {
-  painel: LayoutDashboard,
+export const ICONS: Record<NavIcon, React.ComponentType<{ className?: string }>> = {
+  inicio: House,
   cronograma: CalendarClock,
   encontristas: UserRound,
   grupos: Shapes,
@@ -173,5 +173,35 @@ export function MobileNav({ items, userName }: { items: NavItem[]; userName: str
         </div>
       ) : null}
     </>
+  );
+}
+
+// Tela inicial: um card por módulo que a pessoa pode acessar.
+export function ModuleCards({ items }: { items: NavItem[] }) {
+  return (
+    <ul className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
+      {items.map((item) => {
+        const Icon = ICONS[item.icon];
+        const highlight = item.icon === 'cronograma';
+        return (
+          <li key={item.href}>
+            <Link
+              href={item.href}
+              className="group flex h-full min-h-[124px] flex-col justify-between rounded-[14px] border border-pedra-200 bg-white p-4 shadow-[0_1px_2px_rgba(21,32,46,0.06)] transition-colors hover:border-manto/40 active:bg-pedra-100 sm:min-h-[150px] sm:p-5"
+            >
+              <span
+                className={cn(
+                  'flex h-12 w-12 items-center justify-center rounded-xl sm:h-[52px] sm:w-[52px]',
+                  highlight ? 'bg-cirio-50 text-cirio-700' : 'bg-manto-50 text-manto',
+                )}
+              >
+                <Icon className="h-6 w-6" />
+              </span>
+              <span className="mt-4 text-base font-bold leading-tight text-pedra-900 sm:text-lg">{item.label}</span>
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
   );
 }

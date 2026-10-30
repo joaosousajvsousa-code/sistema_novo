@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 export default async function TrocarSenhaPage() {
   const access = await getAccess();
   if (!access) redirect('/sair?motivo=sessao');
-  if (!access.mustChangePassword) redirect('/painel');
+  if (!access.mustChangePassword) redirect('/inicio');
   return (
     <AuthFrame title={`Olá, ${access.fullName.split(' ')[0]}`} subtitle="Crie uma senha pessoal para continuar. A senha temporária deixa de valer.">
       <ForcedPasswordForm />

@@ -140,7 +140,7 @@ export async function setStatus(_: ActionState, fd: FormData): Promise<ActionSta
   const { error } = await supabase.rpc('set_schedule_status', { p_id: id.data, p_status: status.data, p_note: null });
   if (error) return fail(friendlyError(error));
   revalidatePath('/cronograma');
-  revalidatePath('/painel');
+  
   return done(STATUS_MSG[status.data]);
 }
 
@@ -154,7 +154,7 @@ export async function shiftAfter(_: ActionState, fd: FormData): Promise<ActionSt
   const { data, error } = await supabase.rpc('shift_schedule_after', { p_id: id.data, p_minutes: minutes.data });
   if (error) return fail(friendlyError(error));
   revalidatePath('/cronograma');
-  revalidatePath('/painel');
+  
   return done(`${data ?? 0} momento(s) seguinte(s) ${minutes.data > 0 ? 'empurrado(s)' : 'adiantado(s)'} em ${Math.abs(minutes.data)} min.`);
 }
 

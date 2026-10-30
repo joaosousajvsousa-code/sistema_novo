@@ -30,7 +30,7 @@ export async function forcedChangePassword(_: ActionState, fd: FormData): Promis
   if (!parsed.success) return fromZod(parsed.error);
   const err = await applyNewPassword(parsed.data.password);
   if (err) return err;
-  redirect('/painel');
+  redirect('/inicio');
 }
 
 // Troca voluntária: confere a senha atual antes.

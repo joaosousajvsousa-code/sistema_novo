@@ -42,7 +42,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
   if (user && pathname === '/login') {
-    return NextResponse.redirect(new URL('/painel', request.url));
+    return NextResponse.redirect(new URL('/inicio', request.url));
   }
   return response;
 }
