@@ -7,7 +7,7 @@ import { campEditable, getActiveCamp } from '@/lib/camp';
 import { PageHeader, Panel, Badge, DataList, Notice, Tabs, EmptyState } from '@/components/ui/layout';
 import { HistoryList } from '@/components/HistoryList';
 import { ageOn, formatDate, formatDateTime, formatPhone, whatsappLink } from '@/lib/format';
-import { ENCONTRISTA_STATUS, HEALTH_STATUS } from '@/lib/labels';
+import { ATTENDANCE, ENCONTRISTA_STATUS, HEALTH_STATUS } from '@/lib/labels';
 import { EditEncontristaForm, EditHealthForm, type EncontristaData, type HealthData } from '../EncontristaForm';
 import { FichaStatusForm, GroupForm } from './FichaActions';
 import { leaderNames, loadGroupLeaders } from '@/lib/tenentes';
@@ -40,7 +40,7 @@ export default async function FichaPage({ params, searchParams }: { params: { id
   const { data: e } = await supabase
     .from('encontristas')
     .select(
-      'id, camp_id, person_id, status, shirt_size, emergency_name, emergency_phone, emergency_relationship, form_notes, admin_notes, created_at, creator:profiles!encontristas_created_by_fkey(full_name), person:people(full_name, phone, birth_date), assignment:participant_group_assignments(group_id, assigned_at, group:participant_groups(name))',
+      'id, camp_id, person_id, status, shirt_size, attendance_status, attendance_at, attendance_by_profile:profiles!encontristas_attendance_by_fkey(full_name), emergency_name, emergency_phone, emergency_relationship, form_notes, admin_notes, created_at, creator:profiles!encontristas_created_by_fkey(full_name), person:people(full_name, phone, birth_date), assignment:participant_group_assignments(group_id, assigned_at, group:participant_groups(name))',
     )
     .eq('id', params.id)
     .maybeSingle();
@@ -147,6 +147,19 @@ export default async function FichaPage({ params, searchParams }: { params: { id
             <Panel title="Cadastro">
               <DataList
                 items={[
+                  {
+                    label: 'Presença',
+                    value: (
+                      <span className="flex flex-wrap items-center gap-2">
+                        <Badge tone={ATTENDANCE[e.attendance_status]?.tone}>{ATTENDANCE[e.attendance_status]?.label}</Badge>
+                        {e.attendance_at ? (
+                          <span className="text-xs font-normal text-pedra-500">
+                            {formatDateTime(e.attendance_at)} · {(e.attendance_by_profile as unknown as { full_name: string } | null)?.full_name ?? '—'}
+                          </span>
+                        ) : null}
+                      </span>
+                    ),
+                  },
                   { label: 'Cadastrado em', value: formatDateTime(e.created_at) },
                   { label: 'Por', value: creator?.full_name ?? null },
                 ]}

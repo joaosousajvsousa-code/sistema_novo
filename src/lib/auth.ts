@@ -15,7 +15,9 @@ export type Permission =
   | 'saude.ver'
   | 'grupos.gerenciar'
   | 'programacao.gerenciar'
-  | 'financeiro.gerenciar';
+  | 'financeiro.gerenciar'
+  | 'presenca.marcar'
+  | 'camisetas.ver';
 
 export type Access = {
   userId: string;

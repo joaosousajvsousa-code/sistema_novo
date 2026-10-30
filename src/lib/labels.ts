@@ -57,3 +57,9 @@ export const PAYMENT_METHOD: Record<string, string> = {
   transferencia: 'Transferência',
   outro: 'Outro',
 };
+
+export const ATTENDANCE: Record<string, { label: string; tone: 'neutral' | 'ok' | 'erro' }> = {
+  pendente: { label: 'Pendente', tone: 'neutral' },
+  presente: { label: 'Presente', tone: 'ok' },
+  ausente: { label: 'Ausente', tone: 'erro' },
+};
