@@ -47,7 +47,7 @@ export async function GET() {
   const header = (ws: ExcelJS.Worksheet) => {
     const row = ws.getRow(1);
     row.font = { bold: true, color: { argb: 'FFFFFFFF' } };
-    row.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1B2F4E' } };
+    row.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF3D4A2A' } };
     ws.views = [{ state: 'frozen', ySplit: 1 }];
     ws.autoFilter = { from: { row: 1, column: 1 }, to: { row: 1, column: ws.columnCount } };
   };

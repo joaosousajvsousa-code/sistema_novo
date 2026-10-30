@@ -40,7 +40,7 @@ export default async function InscricaoPage({ params }: { params: { slug: string
     <div className="min-h-dvh bg-pedra">
       <header className="bg-manto px-4 pb-14 pt-5 text-white">
         <div className="mx-auto max-w-lg">
-          <Logo light />
+          <Logo light height={52} />
           {info ? (
             <div className="mt-6">
               <p className="text-sm text-manto-100/80">{info.camp_name}</p>

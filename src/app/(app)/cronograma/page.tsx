@@ -211,7 +211,7 @@ export default async function CronogramaPage({ searchParams }: { searchParams: {
                     icon="play"
                     variant="primary"
                     size="lg"
-                    className="[&_button]:bg-cirio [&_button]:text-manto-800 [&_button:hover]:bg-[#D2AE62]"
+                    className="[&_button]:bg-cirio [&_button]:text-manto-800 [&_button:hover]:bg-[#D4B37E]"
                     confirm={current ? `Começar “${next.title}”? “${current.title}” será concluído agora.` : undefined}
                   />
                 ) : null}

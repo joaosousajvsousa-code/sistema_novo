@@ -24,9 +24,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <div className="min-h-dvh lg:pl-64">
       <aside className="fixed inset-y-0 left-0 z-20 hidden w-64 flex-col bg-manto lg:flex">
-        <div className="flex h-16 items-center px-5">
+        <div className="flex h-20 items-center px-5">
           <Link href="/inicio" aria-label="Ir para o início">
-            <Logo light />
+            <Logo light height={48} />
           </Link>
         </div>
         <SidebarNav items={nav} />

@@ -42,7 +42,7 @@ export function Checkbox({ className, ...props }: React.InputHTMLAttributes<HTML
   return (
     <input
       type="checkbox"
-      className={cn('h-5 w-5 shrink-0 rounded border-pedra-300 text-manto accent-[#1B2F4E] focus-visible:ring-2', className)}
+      className={cn('h-5 w-5 shrink-0 rounded border-pedra-300 text-manto accent-[#3D4A2A] focus-visible:ring-2', className)}
       {...props}
     />
   );

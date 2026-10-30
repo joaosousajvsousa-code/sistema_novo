@@ -9,7 +9,7 @@
     font-feature-settings: 'tnum' 1;
   }
   h1, h2, h3 { @apply font-bold tracking-tight text-pedra-900; }
-  :focus-visible { outline: 2px solid #C29B4A; outline-offset: 2px; }
+  :focus-visible { outline: 2px solid #C8A165; outline-offset: 2px; }
   input, select, textarea, button { font: inherit; }
 }
 

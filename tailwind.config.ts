@@ -5,8 +5,9 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        manto: { DEFAULT: '#1B2F4E', 600: '#243C62', 700: '#16263F', 800: '#101C30', 50: '#EEF2F8', 100: '#DCE4F0' },
-        cirio: { DEFAULT: '#C29B4A', 50: '#FBF5E8', 700: '#8A6A28' },
+        // Verde oliva militar (cor principal) e cáqui (destaque), a partir da logo.
+        manto: { DEFAULT: '#3D4A2A', 600: '#4A5934', 700: '#313C22', 800: '#252E1A', 50: '#EFF2E8', 100: '#DDE3CF' },
+        cirio: { DEFAULT: '#C8A165', 50: '#F8F0E3', 700: '#80612F' },
         pedra: { DEFAULT: '#F4F6F9', 100: '#E9EDF2', 200: '#DDE2E9', 300: '#C7CFDA', 400: '#98A3B3', 500: '#6B7789', 600: '#4E596A', 700: '#36404F', 900: '#15202E' },
         ok: { DEFAULT: '#2E7D5B', 50: '#E9F5EF' },
         aviso: { DEFAULT: '#9A6412', 50: '#FDF3E2' },
