@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import { Toaster } from 'sonner';
 import { APP_NAME } from '@/config/app';
+import { RegisterSW } from '@/components/pwa/RegisterSW';
 import './globals.css';
 
 // Atkinson Hyperlegible (licença SIL OFL), embutida no projeto.
@@ -20,6 +21,9 @@ export const metadata: Metadata = {
   title: { default: APP_NAME, template: `%s · ${APP_NAME}` },
   description: 'Organização e administração de acampamentos.',
   robots: { index: false, follow: false },
+  applicationName: APP_NAME,
+  appleWebApp: { capable: true, title: APP_NAME, statusBarStyle: 'default' },
+  formatDetection: { telephone: false },
 };
 
 export const viewport: Viewport = {
@@ -33,6 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="pt-BR" className={font.variable}>
       <body className="min-h-dvh font-sans">
         {children}
+        <RegisterSW />
         <Toaster position="top-center" richColors closeButton toastOptions={{ duration: 3500 }} />
       </body>
     </html>

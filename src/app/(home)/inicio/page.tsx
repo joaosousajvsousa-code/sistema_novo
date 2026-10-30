@@ -6,6 +6,7 @@ import { requireAccess } from '@/lib/auth';
 import { getActiveCamp } from '@/lib/camp';
 import { buildModules } from '@/components/layout/nav';
 import { ModuleCards } from '@/components/layout/NavLinks';
+import { InstallApp } from '@/components/pwa/InstallApp';
 import { Logo } from '@/components/Logo';
 import { TIME_ZONE } from '@/config/app';
 
@@ -60,6 +61,7 @@ export default async function InicioPage() {
       </header>
       <main className="mx-auto -mt-10 max-w-5xl px-4 pb-12 sm:-mt-12 sm:px-6">
         <ModuleCards items={modules} />
+        <InstallApp />
       </main>
     </div>
   );

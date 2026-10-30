@@ -14,6 +14,10 @@ module.exports = {
     serverActions: { bodySizeLimit: '6mb' },
   },
   async headers() {
-    return [{ source: '/:path*', headers: securityHeaders }];
+    return [
+      { source: '/:path*', headers: securityHeaders },
+      // O service worker precisa ser sempre o mais recente.
+      { source: '/sw.js', headers: [{ key: 'Cache-Control', value: 'no-cache, no-store, must-revalidate' }] },
+    ];
   },
 };
