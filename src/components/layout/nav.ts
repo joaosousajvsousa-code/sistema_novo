@@ -10,8 +10,9 @@ export function buildNav(access: Access): NavItem[] {
     { href: '/cronograma', label: 'Cronograma', icon: 'cronograma', group: 'operacao' },
   ];
   if (can(access, 'encontristas.ver')) items.push({ href: '/encontristas', label: 'Recrutas', icon: 'encontristas', group: 'operacao' });
+  // Quem só marca presença entra direto na aba Presença de Recrutas.
+  else if (can(access, 'presenca.marcar')) items.push({ href: '/encontristas/presenca', label: 'Recrutas', icon: 'encontristas', group: 'operacao' });
   if (canAny(access, ['encontristas.ver', 'grupos.gerenciar'])) items.push({ href: '/grupos', label: 'Tropas', icon: 'grupos', group: 'operacao' });
-  if (canAny(access, ['presenca.marcar', 'encontristas.ver'])) items.push({ href: '/presenca', label: 'Presença', icon: 'presenca', group: 'operacao' });
   if (canSeeTeams(access)) items.push({ href: '/equipes', label: 'Equipes', icon: 'equipes', group: 'operacao' });
   if (canSeeServidores(access)) items.push({ href: '/servidores', label: 'Soldados/Servos', icon: 'servidores', group: 'operacao' });
   if (can(access, 'camisetas.ver')) items.push({ href: '/camisetas', label: 'Camisetas', icon: 'camisetas', group: 'operacao' });

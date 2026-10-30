@@ -9,10 +9,12 @@ import { ButtonLink } from '@/components/ui/button';
 import { Input, Select } from '@/components/ui/input';
 import { formatPhone, onlyDigits } from '@/lib/format';
 import { PAGE_SIZE } from '@/config/app';
+import { RecrutasTabs } from '@/components/RecrutasTabs';
+import { cn } from '@/lib/cn';
 
 export const metadata: Metadata = { title: 'Recrutas' };
 
-type SP = { q?: string; grupo?: string; status?: string; tamanho?: string; pagina?: string };
+type SP = { q?: string; grupo?: string; status?: string; tamanho?: string; presenca?: string; pagina?: string };
 
 function normalize(q: string) {
   return q
@@ -41,7 +43,7 @@ export default async function EncontristasPage({ searchParams }: { searchParams:
 
   let query = supabase
     .from('encontristas_list')
-    .select('id, full_name, phone, group_id, group_name, shirt_size, status', { count: 'exact' })
+    .select('id, full_name, phone, group_id, group_name, shirt_size, status, attendance_status', { count: 'exact' })
     .eq('camp_id', camp.id)
     .eq('status', status)
     .order('full_name')
@@ -50,6 +52,7 @@ export default async function EncontristasPage({ searchParams }: { searchParams:
   else if (searchParams.grupo) query = query.eq('group_id', searchParams.grupo);
   if (searchParams.tamanho === 'sem') query = query.is('shirt_size', null);
   else if (searchParams.tamanho) query = query.eq('shirt_size', searchParams.tamanho);
+  if (['pendente', 'presente', 'ausente'].includes(searchParams.presenca ?? '')) query = query.eq('attendance_status', searchParams.presenca!);
   if (q) {
     const digits = onlyDigits(q);
     if (digits.length >= 4 && digits.length === q.replace(/[\s()+-]/g, '').length) query = query.ilike('phone', `%${digits}%`);
@@ -62,7 +65,7 @@ export default async function EncontristasPage({ searchParams }: { searchParams:
   ]);
 
   const canCreate = can(access, 'encontristas.editar') && campEditable(camp);
-  const hasFilters = Boolean(q || searchParams.grupo || searchParams.tamanho || searchParams.status);
+  const hasFilters = Boolean(q || searchParams.grupo || searchParams.tamanho || searchParams.status || searchParams.presenca);
   const params = new URLSearchParams(Object.entries(searchParams).filter(([k, v]) => v && k !== 'pagina') as [string, string][]);
 
   return (
@@ -78,11 +81,12 @@ export default async function EncontristasPage({ searchParams }: { searchParams:
           ) : null
         }
       />
-      <form className="mb-4 grid gap-2 sm:grid-cols-[1fr_180px_140px_140px_auto]" role="search">
+      <RecrutasTabs current="fichas" showFichas />
+      <form className="mb-4 grid grid-cols-2 gap-2 lg:grid-cols-[1fr_170px_140px_140px_140px_auto]" role="search">
         <label htmlFor="q" className="sr-only">
           Buscar por nome ou telefone
         </label>
-        <Input id="q" name="q" type="search" defaultValue={q} placeholder="Nome ou telefone" />
+        <Input id="q" name="q" type="search" defaultValue={q} placeholder="Nome ou telefone" className="col-span-2 lg:col-span-1" />
         <label htmlFor="grupo" className="sr-only">
           Tropa
         </label>
@@ -114,13 +118,25 @@ export default async function EncontristasPage({ searchParams }: { searchParams:
           <option value="">Ativos</option>
           <option value="cancelado">Cancelados</option>
         </Select>
-        <button className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-manto px-4 text-sm font-bold text-white">
+        <label htmlFor="presenca" className="sr-only">
+          Presença
+        </label>
+        <Select id="presenca" name="presenca" defaultValue={searchParams.presenca ?? ''}>
+          <option value="">Toda presença</option>
+          <option value="presente">Presentes</option>
+          <option value="ausente">Ausentes</option>
+          <option value="pendente">Não marcados</option>
+        </Select>
+        <button className="col-span-2 inline-flex h-11 items-center justify-center gap-2 rounded-md bg-manto px-4 text-sm font-bold text-white lg:col-span-1">
           <Search className="h-4 w-4" /> Filtrar
         </button>
       </form>
       <div className="rounded-lg border border-pedra-200 bg-white">
         {error ? (
-          <EmptyState title="Não foi possível carregar os recrutas" description="Verifique a conexão e recarregue a página." />
+          <EmptyState
+            title="Não foi possível carregar os recrutas"
+            description={error.code === '42703' ? 'Rode no Supabase o arquivo 0006_presenca_camisetas.sql.' : 'Verifique a conexão e recarregue a página.'}
+          />
         ) : !rows?.length ? (
           <EmptyState
             icon={<UserRound className="h-8 w-8" />}
@@ -153,7 +169,14 @@ export default async function EncontristasPage({ searchParams }: { searchParams:
                     href={`/encontristas/${r.id}`}
                     className="grid grid-cols-[1fr_auto] gap-x-3 gap-y-0.5 px-4 py-3 hover:bg-pedra-100/60 md:grid-cols-[1fr_160px_180px_90px] md:items-center md:gap-4 md:px-5"
                   >
-                    <span className="truncate font-bold">{r.full_name}</span>
+                    <span className="flex min-w-0 items-center gap-2">
+                      <span className="truncate font-bold">{r.full_name}</span>
+                      {r.attendance_status && r.attendance_status !== 'pendente' ? (
+                        <span className={cn('shrink-0 rounded px-1.5 py-0.5 text-[11px] font-bold', r.attendance_status === 'presente' ? 'bg-ok-50 text-ok' : 'bg-erro-50 text-erro')}>
+                          {r.attendance_status === 'presente' ? 'Presente' : 'Ausente'}
+                        </span>
+                      ) : null}
+                    </span>
                     <span className="text-right text-sm md:order-last md:text-left">{r.shirt_size ?? <Badge tone="aviso">—</Badge>}</span>
                     <span className="text-sm text-pedra-600">{formatPhone(r.phone) || '—'}</span>
                     <span className="truncate text-sm max-md:col-span-2">

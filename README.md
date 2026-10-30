@@ -27,7 +27,7 @@ PostgreSQL, login e regras de acesso) · hospedagem na Vercel.
 | Grupos | Grupos com limite opcional, distribuição em lote e realocação sem duplicar a ficha. |
 | Cronograma | Lista do cronograma por dia, colada de uma vez ou momento a momento. Um tique marca que o momento começou (o anterior é concluído). Mostra agora/próximo, atraso, previsão dos seguintes e permite empurrar horários guardando o original. Atualiza sozinho a cada 15 s. |
 | Financeiro | Só com a permissão “Financeiro”. Pagamento na ficha de cada soldado/servo (valor combinado e pago, comprovante, conferência, isenção, estorno); receitas e despesas com categorias, equipe e comprovante; orçamento por categoria; saldo bancário informado x livro-caixa; exportação Excel. |
-| Presença | Tela para o celular: busca por nome ou telefone, tropa e camiseta de cada recruta, botões grandes de Presente/Ausente, contador ao vivo e por tropa. Sem dados de saúde. Permissão “Marcar presença”. |
+| Presença | Aba dentro de **Recrutas**. Tela para o celular: busca por nome ou telefone, tropa e camiseta de cada recruta, botões grandes de Presente/Ausente, contador ao vivo e por tropa. Sem dados de saúde. Permissão “Marcar presença”. |
 | Camisetas | Total por tamanho para o fornecedor, quadro por equipe e por tropa, filtros, lista nominal, exportação Excel e “Fechar pedido” com versões guardadas. Permissão “Relatório de camisetas”. |
 | Painel | Indicadores e alertas calculados dos dados reais (equipes lotadas, sem coordenador, encontristas sem grupo, camisetas sem tamanho). |
 | Auditoria | Registro de todas as alterações importantes. Ninguém consegue editar ou apagar. |

@@ -12,6 +12,6 @@ export async function markAttendance(id: string, status: 'pendente' | 'presente'
   if (!parsed.success) return { ok: false, error: 'Ação inválida.' };
   const { error } = await createClient().rpc('set_attendance', { p_id: parsed.data.id, p_status: parsed.data.status });
   if (error) return { ok: false, error: friendlyError(error) };
-  revalidatePath('/presenca');
+  revalidatePath('/encontristas/presenca'); revalidatePath('/encontristas');
   return { ok: true, at: new Date().toISOString() };
 }
