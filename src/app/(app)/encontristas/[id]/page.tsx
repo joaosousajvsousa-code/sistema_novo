@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { HeartPulse, Lock, MessageCircle } from 'lucide-react';
+import { HeartPulse, IdCard, Lock, MessageCircle, Phone as PhoneIcon, Siren } from 'lucide-react';
 import { can, requirePerm } from '@/lib/auth';
 import { createClient } from '@/lib/supabase/server';
 import { campEditable, getActiveCamp } from '@/lib/camp';
-import { PageHeader, Panel, Badge, DataList, Notice, Tabs, EmptyState } from '@/components/ui/layout';
+import { PageHeader, Panel, Badge, DataList, Notice, Tabs } from '@/components/ui/layout';
+import { cn } from '@/lib/cn';
 import { HistoryList } from '@/components/HistoryList';
 import { ageOn, formatDate, formatDateTime, formatPhone, whatsappLink } from '@/lib/format';
 import { ATTENDANCE, ENCONTRISTA_STATUS, HEALTH_STATUS } from '@/lib/labels';
@@ -14,8 +15,40 @@ import { leaderNames, loadGroupLeaders } from '@/lib/tenentes';
 
 export const metadata: Metadata = { title: 'Ficha do recruta' };
 
-const TABS = ['dados', 'emergencia', 'saude', 'grupo', 'historico', 'editar'] as const;
+const TABS = ['dados', 'grupo', 'historico', 'editar'] as const;
 type Tab = (typeof TABS)[number];
+
+// Cartão em destaque da aba Dados pessoais.
+function HighlightCard({
+  icon,
+  title,
+  tone,
+  aside,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  tone: 'manto' | 'erro' | 'cirio';
+  aside?: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  const t = {
+    manto: { bar: 'bg-manto', chip: 'bg-manto-50 text-manto' },
+    erro: { bar: 'bg-erro', chip: 'bg-erro-50 text-erro' },
+    cirio: { bar: 'bg-cirio', chip: 'bg-cirio-50 text-cirio-700' },
+  }[tone];
+  return (
+    <section className="overflow-hidden rounded-xl border border-pedra-200 bg-white shadow-[0_10px_30px_-18px_rgba(21,32,46,0.35)]">
+      <div aria-hidden className={cn('h-1.5', t.bar)} />
+      <header className="flex items-center gap-3 px-5 pt-4">
+        <span className={cn('flex h-10 w-10 shrink-0 items-center justify-center rounded-lg', t.chip)}>{icon}</span>
+        <h2 className="min-w-0 flex-1 text-base">{title}</h2>
+        {aside}
+      </header>
+      <div className="px-5 pb-5 pt-4">{children}</div>
+    </section>
+  );
+}
 
 function Phone({ value }: { value: string | null }) {
   if (!value) return null;
@@ -51,6 +84,7 @@ export default async function FichaPage({ params, searchParams }: { params: { id
   const canEdit = editable && can(access, 'encontristas.editar');
   const canHealth = can(access, 'saude.ver');
   const canGroups = editable && can(access, 'grupos.gerenciar');
+  // Emergência e saúde agora ficam em Dados pessoais (links antigos continuam funcionando).
   const requested = (TABS as readonly string[]).includes(searchParams.aba ?? '') ? (searchParams.aba as Tab) : 'dados';
   const tab: Tab = requested === 'editar' && !canEdit ? 'dados' : requested;
 
@@ -64,11 +98,11 @@ export default async function FichaPage({ params, searchParams }: { params: { id
   const age = ageOn(person.birth_date);
   const base = `/encontristas/${e.id}`;
 
-  // Saúde: só busca quando a aba é aberta (cada leitura fica registrada).
+  // Saúde: só busca na aba Dados pessoais, para quem pode ver (cada leitura fica registrada).
   type HealthView = HealthData & { updated_at: string | null; updated_by_name: string | null };
   let health: HealthView | null = null;
   let healthError = false;
-  if (tab === 'saude' && canHealth) {
+  if (tab === 'dados' && canHealth) {
     const { data, error } = await supabase.rpc('get_encontrista_health', { p_id: e.id });
     health = (data as HealthView | null) ?? null;
     healthError = Boolean(error);
@@ -113,8 +147,6 @@ export default async function FichaPage({ params, searchParams }: { params: { id
         current={tab}
         items={[
           { key: 'dados', label: 'Dados pessoais', href: base },
-          { key: 'emergencia', label: 'Emergência', href: `${base}?aba=emergencia` },
-          { key: 'saude', label: 'Saúde', href: `${base}?aba=saude` },
           { key: 'grupo', label: 'Tropa', href: `${base}?aba=grupo` },
           { key: 'historico', label: 'Histórico', href: `${base}?aba=historico` },
           ...(canEdit ? [{ key: 'editar', label: 'Editar', href: `${base}?aba=editar` }] : []),
@@ -122,9 +154,9 @@ export default async function FichaPage({ params, searchParams }: { params: { id
       />
 
       {tab === 'dados' ? (
-        <div className="grid gap-5 lg:grid-cols-[1fr_300px]">
+        <div className="grid gap-5 lg:grid-cols-[1fr_320px]">
           <div className="space-y-5">
-            <Panel title="Dados pessoais">
+            <HighlightCard icon={<IdCard className="h-5 w-5" aria-hidden />} title="Dados pessoais" tone="manto">
               <DataList
                 items={[
                   { label: 'Nome completo', value: person.full_name },
@@ -133,16 +165,102 @@ export default async function FichaPage({ params, searchParams }: { params: { id
                   { label: 'Camiseta', value: e.shirt_size },
                 ]}
               />
-            </Panel>
-            <Panel title="Observações">
-              <DataList
-                items={[
-                  { label: 'Da ficha física', value: e.form_notes ? <span className="whitespace-pre-line font-normal">{e.form_notes}</span> : null },
-                  { label: 'Administrativas', value: e.admin_notes ? <span className="whitespace-pre-line font-normal">{e.admin_notes}</span> : null },
-                ]}
-              />
-            </Panel>
+            </HighlightCard>
+
+            <HighlightCard icon={<Siren className="h-5 w-5" aria-hidden />} title="Contato de emergência" tone="erro">
+              {e.emergency_name || e.emergency_phone ? (
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="min-w-0">
+                    <p className="text-lg font-bold">{e.emergency_name ?? '—'}</p>
+                    {e.emergency_relationship ? <p className="text-sm text-pedra-500">{e.emergency_relationship}</p> : null}
+                    {e.emergency_phone ? <p className="mt-1 text-sm font-bold text-pedra-700">{formatPhone(e.emergency_phone)}</p> : null}
+                  </div>
+                  {e.emergency_phone ? (
+                    <div className="flex gap-2">
+                      <a
+                        href={`tel:+55${e.emergency_phone}`}
+                        className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-md bg-erro px-4 text-sm font-bold text-white hover:bg-erro/90 sm:flex-none"
+                      >
+                        <PhoneIcon className="h-4 w-4" aria-hidden /> Ligar
+                      </a>
+                      {whatsappLink(e.emergency_phone) ? (
+                        <a
+                          href={whatsappLink(e.emergency_phone)!}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-md border border-pedra-300 bg-white px-4 text-sm font-bold text-ok hover:bg-ok-50 sm:flex-none"
+                        >
+                          <MessageCircle className="h-4 w-4" aria-hidden /> WhatsApp
+                        </a>
+                      ) : null}
+                    </div>
+                  ) : null}
+                </div>
+              ) : (
+                <p className="text-sm text-pedra-500">Nenhum contato de emergência informado.</p>
+              )}
+            </HighlightCard>
+
+            <HighlightCard
+              icon={<HeartPulse className="h-5 w-5" aria-hidden />}
+              title="Saúde"
+              tone="cirio"
+              aside={canHealth ? <span className="hidden text-xs text-pedra-500 sm:inline">Consulta registrada no histórico</span> : null}
+            >
+              {!canHealth ? (
+                <p className="flex items-start gap-2 text-sm text-pedra-600">
+                  <Lock className="mt-0.5 h-4 w-4 shrink-0 text-pedra-400" aria-hidden />
+                  Somente coordenadores autorizados consultam alergias e medicamentos. Peça a permissão a um administrador se precisar.
+                </p>
+              ) : healthError || !health ? (
+                <Notice tone="erro">Não foi possível carregar as informações de saúde.</Notice>
+              ) : (
+                <>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {[
+                      { label: 'Alergias', status: health.allergies_status, text: health.allergies },
+                      { label: 'Medicamentos em uso', status: health.medications_status, text: health.medications },
+                    ].map((item) => (
+                      <div
+                        key={item.label}
+                        className={cn(
+                          'rounded-lg border p-3',
+                          item.status === 'possui' ? 'border-erro/30 bg-erro-50' : item.status === 'nao_possui' ? 'border-pedra-200 bg-pedra' : 'border-aviso/30 bg-aviso-50',
+                        )}
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-xs font-bold text-pedra-600">{item.label}</p>
+                          <Badge tone={item.status === 'possui' ? 'erro' : item.status === 'nao_possui' ? 'ok' : 'aviso'}>{HEALTH_STATUS[item.status]}</Badge>
+                        </div>
+                        {item.status === 'possui' && item.text ? <p className="mt-2 whitespace-pre-line text-sm font-bold text-erro">{item.text}</p> : null}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-3">
+                    <p className="text-xs text-pedra-500">Outras observações de saúde</p>
+                    <p className="mt-0.5 whitespace-pre-line text-sm">{health.health_notes || <span className="text-pedra-400">Nenhuma</span>}</p>
+                  </div>
+                  {health.updated_at ? (
+                    <p className="mt-3 text-xs text-pedra-500">
+                      Atualizado em {formatDateTime(health.updated_at)}
+                      {health.updated_by_name ? ` por ${health.updated_by_name}` : ''}
+                    </p>
+                  ) : null}
+                  {canEdit ? (
+                    <details className="group mt-4 rounded-lg border border-pedra-200">
+                      <summary className="flex h-11 cursor-pointer list-none items-center px-3 text-sm font-bold text-manto [&::-webkit-details-marker]:hidden">
+                        Atualizar saúde
+                      </summary>
+                      <div className="border-t border-pedra-100 p-3">
+                        <EditHealthForm id={e.id} data={health} />
+                      </div>
+                    </details>
+                  ) : null}
+                </>
+              )}
+            </HighlightCard>
           </div>
+
           <div className="space-y-5">
             <Panel title="Cadastro">
               <DataList
@@ -165,6 +283,14 @@ export default async function FichaPage({ params, searchParams }: { params: { id
                 ]}
               />
             </Panel>
+            <Panel title="Observações">
+              <DataList
+                items={[
+                  { label: 'Da ficha física', value: e.form_notes ? <span className="whitespace-pre-line font-normal">{e.form_notes}</span> : null },
+                  { label: 'Administrativas', value: e.admin_notes ? <span className="whitespace-pre-line font-normal">{e.admin_notes}</span> : null },
+                ]}
+              />
+            </Panel>
             {canEdit ? (
               <Panel title="Situação da ficha">
                 <FichaStatusForm id={e.id} status={e.status} />
@@ -172,71 +298,6 @@ export default async function FichaPage({ params, searchParams }: { params: { id
             ) : null}
           </div>
         </div>
-      ) : null}
-
-      {tab === 'emergencia' ? (
-        <Panel title="Contato de emergência">
-          <DataList
-            items={[
-              { label: 'Nome', value: e.emergency_name },
-              { label: 'Telefone', value: <Phone value={e.emergency_phone} /> },
-              { label: 'Parentesco ou relação', value: e.emergency_relationship },
-            ]}
-          />
-        </Panel>
-      ) : null}
-
-      {tab === 'saude' ? (
-        !canHealth ? (
-          <div className="rounded-lg border border-pedra-200 bg-white">
-            <EmptyState
-              icon={<Lock className="h-8 w-8" />}
-              title="Informações de saúde restritas"
-              description="Somente coordenadores autorizados consultam alergias e medicamentos. Peça a permissão a um administrador se precisar."
-            />
-          </div>
-        ) : healthError || !health ? (
-          <Notice tone="erro">Não foi possível carregar as informações de saúde.</Notice>
-        ) : (
-          <div className="space-y-5">
-            <Notice tone="manto">
-              <span className="inline-flex items-center gap-2">
-                <HeartPulse className="h-4 w-4" aria-hidden /> Dados sensíveis. Esta consulta fica registrada no histórico.
-              </span>
-            </Notice>
-            <Panel title="Informações de saúde">
-              <dl className="grid gap-5 sm:grid-cols-2">
-                {[
-                  { label: 'Alergias', status: health.allergies_status, text: health.allergies },
-                  { label: 'Medicamentos em uso', status: health.medications_status, text: health.medications },
-                ].map((item) => (
-                  <div key={item.label}>
-                    <dt className="text-xs text-pedra-500">{item.label}</dt>
-                    <dd className="mt-1">
-                      <Badge tone={item.status === 'possui' ? 'erro' : item.status === 'nao_possui' ? 'ok' : 'aviso'}>{HEALTH_STATUS[item.status]}</Badge>
-                      {item.status === 'possui' && item.text ? <p className="mt-1.5 whitespace-pre-line text-sm font-bold">{item.text}</p> : null}
-                    </dd>
-                  </div>
-                ))}
-                <div className="sm:col-span-2">
-                  <dt className="text-xs text-pedra-500">Outras observações de saúde</dt>
-                  <dd className="mt-1 whitespace-pre-line text-sm">{health.health_notes || <span className="text-pedra-400">Nenhuma</span>}</dd>
-                </div>
-              </dl>
-              {health.updated_at ? (
-                <p className="mt-4 text-xs text-pedra-500">
-                  Atualizado em {formatDateTime(health.updated_at)}
-                  {health.updated_by_name ? ` por ${health.updated_by_name}` : ''}
-                </p>
-              ) : null}
-            </Panel>
-            {canEdit ? (
-              <Panel title="Atualizar saúde">
-                <EditHealthForm id={e.id} data={health} />
-              </Panel>
-            ) : null}
-          </div>
-        )
       ) : null}
 
       {tab === 'grupo' ? (
