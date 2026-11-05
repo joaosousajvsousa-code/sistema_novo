@@ -5,7 +5,7 @@ import { requireAccess } from '@/lib/auth';
 import { getActiveCamp } from '@/lib/camp';
 import { buildNav } from '@/components/layout/nav';
 import { MobileNav, SidebarNav } from '@/components/layout/NavLinks';
-import { Logo, LogoMark } from '@/components/Logo';
+import { LogoMark } from '@/components/Logo';
 import { Badge } from '@/components/ui/layout';
 import { CAMP_STATUS } from '@/lib/labels';
 import { formatDateRange } from '@/lib/format';
@@ -24,9 +24,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <div className="min-h-dvh lg:pl-64">
       <aside className="fixed inset-y-0 left-0 z-20 hidden w-64 flex-col bg-manto lg:flex">
-        <div className="flex h-20 items-center px-5">
-          <Link href="/inicio" aria-label="Ir para o início">
-            <Logo light height={48} />
+        <div className="flex justify-center px-5 pb-4 pt-6">
+          <Link href="/inicio" aria-label="Ir para o início" className="rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cirio">
+            <LogoMark height={104} priority />
           </Link>
         </div>
         <SidebarNav items={nav} />

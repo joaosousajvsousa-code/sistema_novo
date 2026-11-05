@@ -7,7 +7,7 @@ import { getActiveCamp } from '@/lib/camp';
 import { buildModules } from '@/components/layout/nav';
 import { ModuleCards } from '@/components/layout/NavLinks';
 import { InstallApp } from '@/components/pwa/InstallApp';
-import { Logo } from '@/components/Logo';
+import { LogoMark } from '@/components/Logo';
 import { TIME_ZONE } from '@/config/app';
 
 export const metadata: Metadata = { title: 'Início' };
@@ -31,7 +31,7 @@ export default async function InicioPage() {
     <div className="min-h-dvh bg-pedra">
       <header className="bg-manto pb-16 pt-5 text-white sm:pb-20 sm:pt-6">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 sm:px-6">
-          <Logo light height={56} />
+          <LogoMark height={72} priority />
           <details className="relative">
             <summary className="flex h-10 cursor-pointer list-none items-center gap-1 rounded-md px-3 text-sm font-bold text-manto-100 hover:bg-white/10 [&::-webkit-details-marker]:hidden">
               {access.fullName.split(' ')[0]} <span aria-hidden>▾</span>
