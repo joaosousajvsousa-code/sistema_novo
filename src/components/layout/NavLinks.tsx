@@ -47,7 +47,7 @@ export function SidebarNav({ items }: { items: NavItem[] }) {
   const pathname = usePathname();
   const groups: { key: NavItem['group']; label?: string }[] = [{ key: 'operacao' }, { key: 'admin', label: 'Administração' }];
   return (
-    <nav aria-label="Principal" className="flex-1 space-y-6 overflow-y-auto px-3 py-4">
+    <nav aria-label="Principal" className="flex-1 space-y-6 overflow-y-auto px-3 pb-4 pt-2">
       {groups.map((g) => {
         const list = items.filter((i) => i.group === g.key);
         if (!list.length) return null;

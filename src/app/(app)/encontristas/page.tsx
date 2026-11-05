@@ -82,7 +82,7 @@ export default async function EncontristasPage({ searchParams }: { searchParams:
         }
       />
       <RecrutasTabs current="fichas" showFichas />
-      <form className="mb-4 grid grid-cols-2 gap-2 lg:grid-cols-[1fr_170px_170px_130px_170px_auto]" role="search">
+      <form className="mb-4 grid grid-cols-2 gap-2 lg:grid-cols-[1fr_165px_185px_120px_165px_auto]" role="search">
         <label htmlFor="q" className="sr-only">
           Buscar por nome ou telefone
         </label>

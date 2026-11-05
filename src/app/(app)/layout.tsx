@@ -24,9 +24,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <div className="min-h-dvh lg:pl-64">
       <aside className="fixed inset-y-0 left-0 z-20 hidden w-64 flex-col bg-manto lg:flex">
-        <div className="flex justify-center px-5 pb-4 pt-6">
+        <div className="flex justify-center px-5 pb-0 pt-5">
           <Link href="/inicio" aria-label="Ir para o início" className="rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cirio">
-            <LogoMark height={104} priority />
+            <LogoMark height={168} priority />
           </Link>
         </div>
         <SidebarNav items={nav} />
