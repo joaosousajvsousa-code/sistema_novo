@@ -37,7 +37,7 @@ export function DistributeForm({ rows, groups, allowRemove }: { rows: Row[]; gro
       {Array.from(selected).map((id) => (
         <input key={id} type="hidden" name="ids" value={id} />
       ))}
-      <div className="rounded-lg border border-pedra-200 bg-white">
+      <div className="overflow-hidden rounded-2xl border border-pedra-200 bg-white shadow-[0_10px_30px_-22px_rgba(21,32,46,0.45)]">
         <label className="flex items-center gap-3 border-b border-pedra-200 px-4 py-3 text-sm font-bold sm:px-5">
           <Checkbox
             checked={allChecked}

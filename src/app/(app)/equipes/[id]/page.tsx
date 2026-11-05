@@ -1,11 +1,13 @@
+import { Initials } from '@/components/Initials';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { ProfileHero } from '@/components/ProfileHero';
 import { notFound } from 'next/navigation';
 import { Pencil, UserPlus } from 'lucide-react';
 import { can, canSeeTeams, coordinatesTeam, requireCheck } from '@/lib/auth';
 import { createClient } from '@/lib/supabase/server';
 import { campEditable, getActiveCamp, siteOrigin } from '@/lib/camp';
-import { PageHeader, Panel, Badge, EmptyState, Notice } from '@/components/ui/layout';
+import { Panel, Badge, EmptyState, Notice } from '@/components/ui/layout';
 import { ButtonLink } from '@/components/ui/button';
 import { TEAM_STATUS } from '@/lib/labels';
 import { formatPhone } from '@/lib/format';
@@ -54,10 +56,31 @@ export default async function EquipePage({ params, searchParams }: { params: { i
 
   return (
     <>
-      <PageHeader
-        title={team.name}
-        description={team.description ?? undefined}
+      <ProfileHero
         back={{ href: '/equipes', label: 'Equipes' }}
+        kicker="Equipe de serviço"
+        title={team.name}
+        initials={team.name.charAt(0).toUpperCase()}
+        description={team.description ?? undefined}
+        chips={
+          <>
+            {st ? <Badge tone={st.tone}>{st.label}</Badge> : null}
+            {team.available === 0 ? <Badge tone="cirio">Vagas esgotadas</Badge> : null}
+          </>
+        }
+        aside={
+          <div className="rounded-xl bg-pedra p-4">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-pedra-400">Vagas</p>
+            <p className="mt-1 text-3xl font-bold leading-none">
+              {team.occupied}
+              <span className="text-base font-normal text-pedra-400">/{team.capacity}</span>
+            </p>
+            <div className="mt-2 h-2 overflow-hidden rounded-full bg-white" aria-hidden>
+              <div className={cn('h-full rounded-full', pct >= 100 ? 'bg-cirio' : pct >= 90 ? 'bg-aviso' : 'bg-manto')} style={{ width: `${pct}%` }} />
+            </div>
+            <p className="mt-1.5 text-xs text-pedra-500">{team.available} disponível(is)</p>
+          </div>
+        }
         actions={
           <>
             {canAdd && team.status !== 'inativa' ? (
@@ -71,7 +94,7 @@ export default async function EquipePage({ params, searchParams }: { params: { i
               </ButtonLink>
             ) : null}
           </>
-        }
+}
       />
       {searchParams.criada ? (
         <Notice tone="ok" className="mb-5">
@@ -81,19 +104,6 @@ export default async function EquipePage({ params, searchParams }: { params: { i
 
       <div className="grid gap-5 lg:grid-cols-[1fr_340px]">
         <div className="space-y-5">
-          <section aria-label="Vagas" className="rounded-lg border border-pedra-200 bg-white p-4 sm:p-5">
-            <div className="flex flex-wrap items-center gap-2">
-              {st ? <Badge tone={st.tone}>{st.label}</Badge> : null}
-              {team.available === 0 ? <Badge tone="cirio">Vagas esgotadas</Badge> : null}
-            </div>
-            <p className="mt-3 text-sm text-pedra-600">
-              <span className="text-2xl font-bold text-pedra-900">{team.occupied}</span> de {team.capacity} vagas ocupadas ·{' '}
-              {team.available} disponível(is)
-            </p>
-            <div className="mt-2 h-2 overflow-hidden rounded-full bg-pedra-100" aria-hidden>
-              <div className={cn('h-full rounded-full', pct >= 100 ? 'bg-cirio' : pct >= 90 ? 'bg-aviso' : 'bg-manto')} style={{ width: `${pct}%` }} />
-            </div>
-          </section>
 
           {canMembers ? (
             <Panel
@@ -115,6 +125,7 @@ export default async function EquipePage({ params, searchParams }: { params: { i
                   {members.map((m) => (
                     <li key={m.id}>
                       <Link href={`/servidores/${m.id}`} className="flex items-center gap-3 px-4 py-3 hover:bg-pedra-100/60 sm:px-5">
+                        <Initials name={m.full_name} className="h-10 w-10 text-xs" />
                         <div className="min-w-0 flex-1">
                           <p className="truncate font-bold">{m.full_name}</p>
                           <p className="text-xs text-pedra-500">{formatPhone(m.phone)}</p>

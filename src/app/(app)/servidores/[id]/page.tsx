@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { ProfileHero, initialsOf } from '@/components/ProfileHero';
 import { notFound } from 'next/navigation';
 import { MessageCircle } from 'lucide-react';
 import { can, canSeeServidores, coordinatesTeam, requireCheck } from '@/lib/auth';
 import { createClient } from '@/lib/supabase/server';
 import { campEditable, getActiveCamp } from '@/lib/camp';
-import { PageHeader, Panel, Badge, DataList, Notice, Tabs } from '@/components/ui/layout';
+import { Panel, Badge, DataList, Notice, Tabs } from '@/components/ui/layout';
 import { HistoryList } from '@/components/HistoryList';
 import { ageOn, formatDate, formatDateTime, formatPhone, whatsappLink } from '@/lib/format';
 import { MEMBERSHIP_STATUS, PAYMENT_METHOD, PAYMENT_STATUS, SOURCE_LABEL } from '@/lib/labels';
@@ -72,18 +73,19 @@ export default async function ServidorPage({ params, searchParams }: { params: {
 
   return (
     <>
-      <PageHeader
+      <ProfileHero
+        back={{ href: '/servidores', label: 'Soldados/Servos' }}
+        kicker="Soldado/servo"
         title={person.full_name}
-        description={
+        initials={initialsOf(person.full_name)}
+        chips={
           <>
-            Soldado/servo na equipe{' '}
-            <Link href={`/equipes/${m.team_id}`} className="font-bold text-manto hover:underline">
-              {team.name}
+            <Link href={`/equipes/${m.team_id}`} className="inline-flex items-center rounded-md bg-manto-50 px-2 py-0.5 text-xs font-bold text-manto hover:bg-manto-100">
+              Equipe {team.name}
             </Link>
+            {st ? <Badge tone={st.tone}>Inscrição {st.label.toLowerCase()}</Badge> : null}
           </>
         }
-        back={{ href: '/servidores', label: 'Soldados/Servos' }}
-        actions={st ? <Badge tone={st.tone}>Inscrição {st.label.toLowerCase()}</Badge> : null}
       />
       {searchParams.novo ? (
         <Notice tone="ok" className="mb-5">

@@ -82,7 +82,7 @@ export default async function DistribuirPage({ searchParams }: { searchParams: {
             </button>
           </form>
           {!rows?.length ? (
-            <div className="rounded-lg border border-pedra-200 bg-white">
+            <div className="overflow-hidden rounded-2xl border border-pedra-200 bg-white shadow-[0_10px_30px_-22px_rgba(21,32,46,0.45)]">
               <EmptyState
                 title={q ? 'Ninguém encontrado' : all ? 'Nenhum recruta ativo' : 'Todos os recrutas já têm tropa'}
                 action={!all && !q ? <ButtonLink href={`${base}?ver=todos`} variant="secondary" size="sm">Ver todos para realocar</ButtonLink> : null}

@@ -87,7 +87,7 @@ export default async function CronogramaPage({ searchParams }: { searchParams: {
       {error ? (
         <Notice tone="erro">Não foi possível carregar o cronograma. Verifique a conexão.</Notice>
       ) : !state.items.length ? (
-        <div className="rounded-lg border border-pedra-200 bg-white">
+        <div className="overflow-hidden rounded-2xl border border-pedra-200 bg-white shadow-[0_10px_30px_-22px_rgba(21,32,46,0.45)]">
           <EmptyState
             icon={<CalendarClock className="h-8 w-8" />}
             title="Nenhum momento no cronograma"

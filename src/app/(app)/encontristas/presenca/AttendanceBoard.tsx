@@ -93,7 +93,7 @@ export function AttendanceBoard({ initial, canMark, canOpenSheet }: { initial: R
 
   return (
     <div>
-      <section aria-label="Contagem" className="mb-4 rounded-lg border border-pedra-200 bg-white p-4 sm:p-5">
+      <section aria-label="Contagem" className="mb-4 rounded-2xl border border-pedra-200 bg-white shadow-[0_10px_30px_-22px_rgba(21,32,46,0.45)] p-4 sm:p-5">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <p className="text-sm text-pedra-600">
             <span className="text-3xl font-bold text-ok">{presentes}</span> de {total} presentes
@@ -171,7 +171,7 @@ export function AttendanceBoard({ initial, canMark, canOpenSheet }: { initial: R
       </div>
 
       {visible.length === 0 ? (
-        <p className="rounded-lg border border-pedra-200 bg-white px-4 py-10 text-center text-sm text-pedra-500">
+        <p className="overflow-hidden rounded-2xl border border-pedra-200 bg-white shadow-[0_10px_30px_-22px_rgba(21,32,46,0.45)] px-4 py-10 text-center text-sm text-pedra-500">
           {q ? 'Ninguém encontrado com essa busca.' : 'Nenhum recruta nesta lista.'}
         </p>
       ) : (

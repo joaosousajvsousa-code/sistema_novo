@@ -1,9 +1,10 @@
+import { ProfileHero, initialsOf } from '@/components/ProfileHero';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requirePerm } from '@/lib/auth';
 import { createClient } from '@/lib/supabase/server';
-import { PageHeader, Panel, Badge, DataList, Notice } from '@/components/ui/layout';
+import { Panel, Badge, DataList, Notice } from '@/components/ui/layout';
 import { formatDateTime } from '@/lib/format';
 import { EditUserForm } from '../UserForm';
 import { loadRolesAndPerms } from '../data';
@@ -32,11 +33,17 @@ export default async function UsuarioPage({ params }: { params: { id: string } }
 
   return (
     <>
-      <PageHeader
-        title={user.full_name}
-        description={`@${user.username}`}
+      <ProfileHero
         back={{ href: '/usuarios', label: 'Usuários' }}
-        actions={!user.active ? <Badge tone="erro">Desativado</Badge> : user.must_change_password ? <Badge>Aguardando 1º acesso</Badge> : null}
+        kicker="Usuário do sistema"
+        title={user.full_name}
+        initials={initialsOf(user.full_name)}
+        chips={
+          <>
+            <Badge tone="manto">@{user.username}</Badge>
+            {!user.active ? <Badge tone="erro">Desativado</Badge> : user.must_change_password ? <Badge>Aguardando 1º acesso</Badge> : <Badge tone="ok">Ativo</Badge>}
+          </>
+        }
       />
       {!canManage ? (
         <Notice tone="aviso" className="mb-5">

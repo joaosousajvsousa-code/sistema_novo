@@ -46,7 +46,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         </div>
       </aside>
 
-      <header className="sticky top-0 z-10 border-b border-pedra-200 bg-white/95 backdrop-blur">
+      <header className="sticky top-0 z-10 border-b border-pedra-200 bg-white/90 backdrop-blur-md">
+        <div aria-hidden className="h-1 bg-[repeating-linear-gradient(135deg,#C8A165_0_10px,#3D4A2A_10px_20px)]" />
         <div className="mx-auto flex h-14 max-w-6xl items-center gap-3 px-4 sm:h-16 sm:px-6">
           <Link href="/inicio" className="lg:hidden" aria-label="Ir para o início">
             <LogoMark />

@@ -4,7 +4,7 @@ import { Plus, UsersRound } from 'lucide-react';
 import { can, canSeeTeams, requireCheck } from '@/lib/auth';
 import { createClient } from '@/lib/supabase/server';
 import { getActiveCamp, campEditable } from '@/lib/camp';
-import { PageHeader, Badge, EmptyState, Notice } from '@/components/ui/layout';
+import { PageHeader, Badge, EmptyState, Notice, StatRow } from '@/components/ui/layout';
 import { ButtonLink } from '@/components/ui/button';
 import { TEAM_STATUS } from '@/lib/labels';
 import { cn } from '@/lib/cn';
@@ -48,41 +48,70 @@ export default async function EquipesPage() {
           ) : null
         }
       />
-      <div className="rounded-lg border border-pedra-200 bg-white">
-        {error ? (
-          <EmptyState title="Não foi possível carregar as equipes" description="Verifique a conexão e recarregue a página." />
-        ) : !teams?.length ? (
+      {error ? (
+        <Notice tone="erro">Não foi possível carregar as equipes. Verifique a conexão e recarregue a página.</Notice>
+      ) : !teams?.length ? (
+        <div className="overflow-hidden rounded-2xl border border-pedra-200 bg-white">
           <EmptyState
             icon={<UsersRound className="h-8 w-8" />}
             title="Nenhuma equipe cadastrada"
             description={manage ? 'Crie as equipes de serviço para gerar os links de inscrição.' : 'Você ainda não coordena nenhuma equipe.'}
             action={manage ? <ButtonLink href="/equipes/nova">Criar a primeira equipe</ButtonLink> : null}
           />
-        ) : (
-          <ul className="divide-y divide-pedra-100">
+        </div>
+      ) : (
+        <>
+          <StatRow
+            items={[
+              { label: 'Equipes', value: teams.filter((t) => t.status !== 'inativa').length },
+              { label: 'Vagas ocupadas', value: `${totals.occ}`, sub: `de ${totals.cap}` },
+              { label: 'Vagas livres', value: Math.max(0, totals.cap - totals.occ), tone: 'ok' },
+              { label: 'Sem coordenador', value: teams.filter((t) => t.coordinator_count === 0 && t.status !== 'inativa').length, tone: 'aviso' },
+            ]}
+          />
+          <ul className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {teams.map((t) => {
               const pct = t.capacity ? Math.min(100, Math.round((t.occupied / t.capacity) * 100)) : 0;
               const st = TEAM_STATUS[t.status];
               return (
                 <li key={t.id}>
-                  <Link href={`/equipes/${t.id}`} className={cn('grid gap-2 px-4 py-4 hover:bg-pedra-100/60 sm:grid-cols-[1fr_220px] sm:items-center sm:gap-6 sm:px-5', t.status === 'inativa' && 'opacity-60')}>
-                    <div className="min-w-0">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="font-bold">{t.name}</span>
-                        {st ? <Badge tone={st.tone}>{st.label}</Badge> : null}
-                        {t.coordinator_count === 0 && t.status !== 'inativa' ? <Badge tone="aviso">Sem coordenador</Badge> : null}
-                      </div>
-                      {t.description ? <p className="mt-0.5 line-clamp-1 text-sm text-pedra-500">{t.description}</p> : null}
-                    </div>
-                    <div>
-                      <div className="flex justify-between text-xs text-pedra-600">
-                        <span>
-                          <strong className="text-pedra-900">{t.occupied}</strong> de {t.capacity} vagas
+                  <Link
+                    href={`/equipes/${t.id}`}
+                    className={cn(
+                      'group flex h-full flex-col overflow-hidden rounded-2xl border border-pedra-200 bg-white shadow-[0_10px_30px_-20px_rgba(21,32,46,0.45)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-20px_rgba(21,32,46,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cirio',
+                      t.status === 'inativa' && 'opacity-60',
+                    )}
+                  >
+                    <div className="relative isolate overflow-hidden bg-manto-800 px-5 pb-5 pt-4 text-white">
+                      <div aria-hidden className="absolute inset-0 -z-10 bg-[url('/textura-topografica.svg')] bg-cover bg-center opacity-90" />
+                      <div aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_90%_0%,rgba(200,161,101,0.3),transparent_60%)]" />
+                      <div className="flex items-start justify-between gap-2">
+                        <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-lg font-bold text-cirio ring-1 ring-white/15">
+                          {t.name.charAt(0).toUpperCase()}
                         </span>
-                        <span>{t.available > 0 ? `${t.available} livre(s)` : 'Esgotada'}</span>
+                        {st ? <Badge tone={st.tone} className="ring-1 ring-white/20">{st.label}</Badge> : null}
                       </div>
-                      <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-pedra-100" aria-hidden>
-                        <div className={cn('h-full rounded-full', pct >= 100 ? 'bg-cirio' : pct >= 90 ? 'bg-aviso' : 'bg-manto')} style={{ width: `${pct}%` }} />
+                      <p className="mt-3 text-[11px] font-bold uppercase tracking-[0.16em] text-cirio/90">Equipe</p>
+                      <h2 className="truncate text-2xl leading-tight text-white">{t.name}</h2>
+                    </div>
+                    <div className="flex flex-1 flex-col p-5">
+                      {t.description ? <p className="mb-4 line-clamp-2 text-sm text-pedra-600">{t.description}</p> : null}
+                      <div className="mt-auto">
+                        <div className="flex items-end justify-between">
+                          <p className="text-3xl font-bold leading-none text-pedra-900">
+                            {t.occupied}
+                            <span className="text-base font-normal text-pedra-400">/{t.capacity}</span>
+                          </p>
+                          <span className={cn('text-xs font-bold', t.available > 0 ? 'text-ok' : 'text-cirio-700')}>
+                            {t.available > 0 ? `${t.available} vaga(s) livre(s)` : 'Esgotada'}
+                          </span>
+                        </div>
+                        <div className="mt-2 h-2 overflow-hidden rounded-full bg-pedra-100" aria-hidden>
+                          <div className={cn('h-full rounded-full', pct >= 100 ? 'bg-cirio' : pct >= 90 ? 'bg-aviso' : 'bg-manto')} style={{ width: `${pct}%` }} />
+                        </div>
+                        {t.coordinator_count === 0 && t.status !== 'inativa' ? (
+                          <p className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-aviso-50 px-2 py-1 text-xs font-bold text-aviso">Sem coordenador</p>
+                        ) : null}
                       </div>
                     </div>
                   </Link>
@@ -90,8 +119,8 @@ export default async function EquipesPage() {
               );
             })}
           </ul>
-        )}
-      </div>
+        </>
+      )}
     </>
   );
 }

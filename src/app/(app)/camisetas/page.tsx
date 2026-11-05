@@ -103,16 +103,16 @@ export default async function CamisetasPage({ searchParams }: { searchParams: SP
             </option>
           ))}
         </Select>
-        <button className="inline-flex h-11 items-center justify-center rounded-md bg-manto px-4 text-sm font-bold text-white">Filtrar</button>
+        <button className="inline-flex h-11 items-center justify-center rounded-lg bg-manto px-4 text-sm font-bold text-white shadow-[0_8px_18px_-10px_rgba(61,74,42,0.9)]">Filtrar</button>
       </form>
 
       {!rows.length ? (
-        <div className="rounded-lg border border-pedra-200 bg-white">
+        <div className="overflow-hidden rounded-2xl border border-pedra-200 bg-white shadow-[0_10px_30px_-22px_rgba(21,32,46,0.45)]">
           <EmptyState title={filtered ? 'Nenhuma camiseta com esses filtros' : 'Nenhuma inscrição ainda'} />
         </div>
       ) : (
         <div className="space-y-5">
-          <section aria-label="Total por tamanho" className="rounded-lg border border-pedra-200 bg-white p-4 sm:p-5">
+          <section aria-label="Total por tamanho" className="overflow-hidden rounded-2xl border border-pedra-200 bg-white shadow-[0_10px_30px_-22px_rgba(21,32,46,0.45)] p-4 sm:p-5">
             <div className="flex items-baseline justify-between gap-3">
               <h2 className="text-base">{filtered ? 'Total com os filtros' : 'Total geral para o fornecedor'}</h2>
               <p className="text-sm text-pedra-600">

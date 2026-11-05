@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Download, Minus, Plus } from 'lucide-react';
+import { Download, Minus, Plus, TrendingDown, TrendingUp, Wallet } from 'lucide-react';
 import { requirePerm } from '@/lib/auth';
 import { createClient } from '@/lib/supabase/server';
 import { PageHeader, Panel, Notice, EmptyState } from '@/components/ui/layout';
@@ -91,26 +91,40 @@ export default async function FinanceiroPage() {
         </Notice>
       ) : null}
 
-      <section aria-label="Totais" className="mb-5 grid grid-cols-1 divide-y divide-pedra-200 overflow-hidden rounded-lg border border-pedra-200 bg-white sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-        <div className="p-4 sm:p-5">
-          <p className="text-xs text-pedra-500">Receitas confirmadas</p>
-          <p className="mt-1 text-2xl font-bold text-ok">{formatBRL(s.income)}</p>
-          <p className="mt-1 text-xs text-pedra-500">
+      <section aria-label="Totais" className="mb-6 grid gap-4 lg:grid-cols-[1.25fr_1fr_1fr]">
+        <div className="relative isolate overflow-hidden rounded-2xl bg-manto-800 p-5 text-white shadow-[0_18px_40px_-18px_rgba(20,28,12,0.7)] sm:p-6">
+          <div aria-hidden className="absolute inset-0 -z-10 bg-[url('/textura-topografica.svg')] bg-cover bg-center opacity-90" />
+          <div aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_90%_0%,rgba(200,161,101,0.3),transparent_60%)]" />
+          <p className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-cirio">
+            <Wallet className="h-4 w-4" aria-hidden /> Saldo do livro-caixa
+          </p>
+          <p className={cn('mt-3 text-4xl font-bold leading-none sm:text-5xl', Number(s.balance) < 0 ? 'text-[#F2A79F]' : 'text-white')}>{formatBRL(s.balance)}</p>
+          <p className="mt-3 text-sm text-manto-100/80">
+            {pendingExpected > 0 ? `A receber dos servos: ${formatBRL(pendingExpected)}` : 'Receitas menos despesas lançadas'}
+          </p>
+        </div>
+        <div className="rounded-2xl border border-pedra-200 bg-white p-5 shadow-[0_10px_30px_-22px_rgba(21,32,46,0.45)]">
+          <p className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-pedra-400">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-ok-50 text-ok">
+              <TrendingUp className="h-4 w-4" aria-hidden />
+            </span>
+            Receitas confirmadas
+          </p>
+          <p className="mt-3 text-3xl font-bold leading-none text-ok">{formatBRL(s.income)}</p>
+          <p className="mt-2 text-xs text-pedra-500">
             {formatBRL(s.fees)} de {s.fees_count} servo(s) · {formatBRL(s.other_income)} de outras receitas
           </p>
         </div>
-        <div className="p-4 sm:p-5">
-          <p className="text-xs text-pedra-500">Despesas</p>
-          <p className="mt-1 text-2xl font-bold text-erro">{formatBRL(s.expense)}</p>
-          <p className="mt-1 text-xs text-pedra-500">
-            {Number(s.budget_total) > 0 ? `Orçamento previsto: ${formatBRL(s.budget_total)}` : 'Sem orçamento definido'}
+        <div className="rounded-2xl border border-pedra-200 bg-white p-5 shadow-[0_10px_30px_-22px_rgba(21,32,46,0.45)]">
+          <p className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-pedra-400">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-erro-50 text-erro">
+              <TrendingDown className="h-4 w-4" aria-hidden />
+            </span>
+            Despesas
           </p>
-        </div>
-        <div className="p-4 sm:p-5">
-          <p className="text-xs text-pedra-500">Saldo do livro-caixa</p>
-          <p className={cn('mt-1 text-2xl font-bold', Number(s.balance) < 0 ? 'text-erro' : 'text-pedra-900')}>{formatBRL(s.balance)}</p>
-          <p className="mt-1 text-xs text-pedra-500">
-            {pendingExpected > 0 ? `A receber dos servos: ${formatBRL(pendingExpected)}` : 'Receitas menos despesas lançadas'}
+          <p className="mt-3 text-3xl font-bold leading-none text-erro">{formatBRL(s.expense)}</p>
+          <p className="mt-2 text-xs text-pedra-500">
+            {Number(s.budget_total) > 0 ? `Orçamento previsto: ${formatBRL(s.budget_total)}` : 'Sem orçamento definido'}
           </p>
         </div>
       </section>

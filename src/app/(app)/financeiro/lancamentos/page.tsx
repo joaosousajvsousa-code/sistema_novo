@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Minus, Paperclip, Plus, Receipt } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight, Minus, Paperclip, Plus, Receipt } from 'lucide-react';
 import { requirePerm } from '@/lib/auth';
 import { createClient } from '@/lib/supabase/server';
 import { getActiveCamp } from '@/lib/camp';
@@ -101,7 +101,7 @@ export default async function LancamentosPage({ searchParams }: { searchParams: 
           <option value="">Válidos</option>
           <option value="canceladas">Cancelados</option>
         </Select>
-        <button className="inline-flex h-11 items-center justify-center rounded-md bg-manto px-4 text-sm font-bold text-white">Filtrar</button>
+        <button className="inline-flex h-11 items-center justify-center rounded-lg bg-manto px-4 text-sm font-bold text-white shadow-[0_8px_18px_-10px_rgba(61,74,42,0.9)]">Filtrar</button>
       </form>
 
       {searchParams.situacao !== 'canceladas' ? (
@@ -120,7 +120,7 @@ export default async function LancamentosPage({ searchParams }: { searchParams: 
         </p>
       ) : null}
 
-      <div className="rounded-lg border border-pedra-200 bg-white">
+      <div className="overflow-hidden rounded-2xl border border-pedra-200 bg-white shadow-[0_10px_30px_-22px_rgba(21,32,46,0.45)]">
         {error ? (
           <EmptyState title="Não foi possível carregar os lançamentos" />
         ) : !rows?.length ? (
@@ -132,7 +132,10 @@ export default async function LancamentosPage({ searchParams }: { searchParams: 
               const receita = r.kind === 'receita';
               return (
                 <li key={r.id}>
-                  <Link href={`/financeiro/lancamentos/${r.id}`} className={cn('grid grid-cols-[1fr_auto] gap-x-3 px-4 py-3 hover:bg-pedra-100/60 sm:px-5', r.cancelled_at && 'opacity-60')}>
+                  <Link href={`/financeiro/lancamentos/${r.id}`} className={cn('grid grid-cols-[auto_1fr_auto] items-center gap-x-3 px-4 py-3 hover:bg-pedra-100/60 sm:px-5', r.cancelled_at && 'opacity-60')}>
+                    <span aria-hidden className={cn('flex h-10 w-10 items-center justify-center rounded-xl', r.kind === 'receita' ? 'bg-ok-50 text-ok' : 'bg-erro-50 text-erro')}>
+                      {r.kind === 'receita' ? <ArrowUpRight className="h-5 w-5" /> : <ArrowDownRight className="h-5 w-5" />}
+                    </span>
                     <span className="min-w-0">
                       <span className="flex items-center gap-2">
                         <span className={cn('truncate font-bold', r.cancelled_at && 'line-through')}>{r.description}</span>

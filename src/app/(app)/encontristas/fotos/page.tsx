@@ -101,7 +101,7 @@ export default async function FotosPage({ searchParams }: { searchParams: SP }) 
                 </option>
               ))}
             </Select>
-            <button className="inline-flex h-11 items-center justify-center rounded-md bg-manto px-4 text-sm font-bold text-white">Filtrar</button>
+            <button className="inline-flex h-11 items-center justify-center rounded-lg bg-manto px-4 text-sm font-bold text-white shadow-[0_8px_18px_-10px_rgba(61,74,42,0.9)]">Filtrar</button>
           </form>
 
           {!rows.length ? (

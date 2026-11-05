@@ -128,11 +128,11 @@ export default async function EncontristasPage({ searchParams }: { searchParams:
           <option value="ausente">Ausentes</option>
           <option value="pendente">Não marcados</option>
         </Select>
-        <button className="col-span-2 inline-flex h-11 items-center justify-center gap-2 rounded-md bg-manto px-4 text-sm font-bold text-white lg:col-span-1">
+        <button className="col-span-2 inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-manto px-4 text-sm font-bold text-white shadow-[0_8px_18px_-10px_rgba(61,74,42,0.9)] lg:col-span-1">
           <Search className="h-4 w-4" /> Filtrar
         </button>
       </form>
-      <div className="rounded-lg border border-pedra-200 bg-white">
+      <div className="overflow-hidden rounded-2xl border border-pedra-200 bg-white shadow-[0_10px_30px_-22px_rgba(21,32,46,0.45)]">
         {error ? (
           <EmptyState
             title="Não foi possível carregar os recrutas"

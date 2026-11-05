@@ -2,8 +2,8 @@ import * as React from 'react';
 import { cn } from '@/lib/cn';
 
 const base =
-  'block w-full rounded-md border border-pedra-300 bg-white px-3 text-base text-pedra-900 placeholder:text-pedra-400 ' +
-  'focus:border-manto focus:outline-none focus:ring-2 focus:ring-manto/20 disabled:bg-pedra-100 disabled:text-pedra-500 ' +
+  'block w-full rounded-lg border border-pedra-200 bg-white px-3 shadow-[inset_0_1px_2px_rgba(21,32,46,0.04)] text-base text-pedra-900 placeholder:text-pedra-400 ' +
+  'focus:border-manto focus:outline-none focus:ring-4 focus:ring-manto/10 disabled:bg-pedra-100 disabled:text-pedra-500 ' +
   'aria-[invalid=true]:border-erro aria-[invalid=true]:ring-erro/15';
 
 export const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(function Input(

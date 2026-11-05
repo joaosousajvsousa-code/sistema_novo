@@ -75,12 +75,12 @@ export default async function PagamentosPage({ searchParams }: { searchParams: {
             </option>
           ))}
         </Select>
-        <button className="inline-flex h-11 items-center justify-center rounded-md bg-manto px-4 text-sm font-bold text-white">Filtrar</button>
+        <button className="inline-flex h-11 items-center justify-center rounded-lg bg-manto px-4 text-sm font-bold text-white shadow-[0_8px_18px_-10px_rgba(61,74,42,0.9)]">Filtrar</button>
       </form>
       <p className="mb-3 text-sm text-pedra-600">
         {rows.length} inscrição(ões) · valor pago informado: <strong>{formatBRL(total)}</strong>
       </p>
-      <div className="rounded-lg border border-pedra-200 bg-white">
+      <div className="overflow-hidden rounded-2xl border border-pedra-200 bg-white shadow-[0_10px_30px_-22px_rgba(21,32,46,0.45)]">
         {error ? (
           <EmptyState title="Não foi possível carregar os pagamentos" />
         ) : !rows.length ? (
