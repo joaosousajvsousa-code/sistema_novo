@@ -1,7 +1,7 @@
 import type { Access } from '@/lib/auth';
 import { can, canAny, canSeeServidores, canSeeTeams } from '@/lib/auth';
 
-export type NavIcon = 'inicio' | 'presenca' | 'camisetas' | 'cronograma' | 'equipes' | 'servidores' | 'encontristas' | 'grupos' | 'financeiro' | 'configuracoes' | 'usuarios' | 'auditoria';
+export type NavIcon = 'inicio' | 'saude' | 'presenca' | 'camisetas' | 'cronograma' | 'equipes' | 'servidores' | 'encontristas' | 'grupos' | 'financeiro' | 'configuracoes' | 'usuarios' | 'auditoria';
 export type NavItem = { href: string; label: string; icon: NavIcon; group: 'operacao' | 'admin' };
 
 export function buildNav(access: Access): NavItem[] {
@@ -13,6 +13,7 @@ export function buildNav(access: Access): NavItem[] {
   // Quem só marca presença entra direto na aba Presença de Recrutas.
   else if (can(access, 'presenca.marcar')) items.push({ href: '/encontristas/presenca', label: 'Recrutas', icon: 'encontristas', group: 'operacao' });
   if (canAny(access, ['encontristas.ver', 'grupos.gerenciar'])) items.push({ href: '/grupos', label: 'Tropas', icon: 'grupos', group: 'operacao' });
+  if (canAny(access, ['saude.ver', 'saude.medicar'])) items.push({ href: '/saude', label: 'Saúde', icon: 'saude', group: 'operacao' });
   if (canSeeTeams(access)) items.push({ href: '/equipes', label: 'Equipes', icon: 'equipes', group: 'operacao' });
   if (canSeeServidores(access)) items.push({ href: '/servidores', label: 'Soldados/Servos', icon: 'servidores', group: 'operacao' });
   if (can(access, 'camisetas.ver')) items.push({ href: '/camisetas', label: 'Camisetas', icon: 'camisetas', group: 'operacao' });

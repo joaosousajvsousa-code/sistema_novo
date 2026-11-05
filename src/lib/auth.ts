@@ -17,6 +17,7 @@ export type Permission =
   | 'programacao.gerenciar'
   | 'financeiro.gerenciar'
   | 'presenca.marcar'
+  | 'saude.medicar'
   | 'camisetas.ver';
 
 export type Access = {

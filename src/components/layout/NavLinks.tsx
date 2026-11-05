@@ -4,6 +4,7 @@ import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
+  HeartPulse,
   House,
   ClipboardCheck,
   Shirt,
@@ -27,6 +28,7 @@ import type { NavIcon, NavItem } from './nav';
 export const ICONS: Record<NavIcon, React.ComponentType<{ className?: string }>> = {
   inicio: House,
   presenca: ClipboardCheck,
+  saude: HeartPulse,
   camisetas: Shirt,
   cronograma: CalendarClock,
   encontristas: UserRound,

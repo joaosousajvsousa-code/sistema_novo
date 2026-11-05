@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { HeartPulse, IdCard, Lock, MessageCircle, Phone as PhoneIcon, Siren } from 'lucide-react';
 import { can, requirePerm } from '@/lib/auth';
@@ -106,6 +107,13 @@ export default async function FichaPage({ params, searchParams }: { params: { id
     const { data, error } = await supabase.rpc('get_encontrista_health', { p_id: e.id });
     health = (data as HealthView | null) ?? null;
     healthError = Boolean(error);
+  }
+
+  // Remédios com horário (módulo Saúde).
+  let meds: { id: string; medication: string; dose: string | null; times: string[] }[] = [];
+  if (tab === 'dados' && canHealth) {
+    const { data } = await supabase.from('medication_plans').select('id, medication, dose, times').eq('encontrista_id', e.id).eq('active', true).order('created_at');
+    meds = data ?? [];
   }
 
   const tenentes = tab === 'grupo' && assignment?.group_id ? leaderNames((await loadGroupLeaders())[assignment.group_id]) : '';
@@ -239,6 +247,31 @@ export default async function FichaPage({ params, searchParams }: { params: { id
                   <div className="mt-3">
                     <p className="text-xs text-pedra-500">Outras observações de saúde</p>
                     <p className="mt-0.5 whitespace-pre-line text-sm">{health.health_notes || <span className="text-pedra-400">Nenhuma</span>}</p>
+                  </div>
+                  <div className="mt-4 rounded-lg border border-pedra-200 p-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-xs font-bold text-pedra-600">Remédios com horário</p>
+                      <Link href="/saude" className="text-xs font-bold text-manto hover:underline">
+                        Ver cronograma
+                      </Link>
+                    </div>
+                    {meds.length ? (
+                      <ul className="mt-2 space-y-1 text-sm">
+                        {meds.map((m) => (
+                          <li key={m.id}>
+                            <strong>{m.medication}</strong>
+                            {m.dose ? ` · ${m.dose}` : ''} <span className="text-pedra-500">— {m.times.map((t) => t.slice(0, 5)).join(', ')}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="mt-1 text-sm text-pedra-400">Nenhum remédio com horário.</p>
+                    )}
+                    {canEdit ? (
+                      <Link href={`/saude/novo?recruta=${e.id}`} className="mt-2 inline-flex text-sm font-bold text-manto hover:underline">
+                        + Adicionar remédio com horário
+                      </Link>
+                    ) : null}
                   </div>
                   {health.updated_at ? (
                     <p className="mt-3 text-xs text-pedra-500">
