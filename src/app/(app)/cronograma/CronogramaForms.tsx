@@ -216,19 +216,19 @@ export function TickButton({
 
   const face =
     status === 'concluida' ? (
-      <span className="flex h-11 w-11 items-center justify-center rounded-full bg-ok text-white">
+      <span className="flex h-11 w-11 items-center justify-center rounded-full bg-manto text-white ring-4 ring-pedra">
         <Check className="h-6 w-6" strokeWidth={3} />
       </span>
     ) : status === 'em_andamento' ? (
-      <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-cirio bg-cirio/15 text-cirio-700">
+      <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-cirio bg-cirio-50 text-cirio-700 ring-4 ring-pedra">
         {pending ? <Loader2 className="h-5 w-5 animate-spin" /> : <Play className="h-5 w-5" fill="currentColor" />}
       </span>
     ) : status === 'cancelada' ? (
-      <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-pedra-200 text-pedra-400">
+      <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-pedra-200 bg-white text-pedra-400 ring-4 ring-pedra">
         <X className="h-5 w-5" />
       </span>
     ) : (
-      <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-pedra-300 bg-white text-transparent transition-colors group-hover:border-manto group-hover:text-manto/40">
+      <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-pedra-300 bg-white text-transparent ring-4 ring-pedra transition-colors group-hover:border-manto group-hover:text-manto/40">
         {pending ? <Loader2 className="h-5 w-5 animate-spin text-manto" /> : <Check className="h-6 w-6" strokeWidth={3} />}
       </span>
     );
