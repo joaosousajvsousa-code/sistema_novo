@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ChevronLeft, ChevronRight, Pencil, Pill, Plus } from 'lucide-react';
 import { can, requireCheck } from '@/lib/auth';
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { campEditable, getActiveCamp } from '@/lib/camp';
 import { PageHeader, Notice, Badge } from '@/components/ui/layout';
 import { ButtonLink } from '@/components/ui/button';
@@ -62,6 +63,16 @@ export default async function SaudePage({ searchParams }: { searchParams: { dia?
       .eq('camp_id', camp.id)
       .order('created_at'),
   ]);
+
+  // Fotos dos recrutas do dia (lidas depois de conferir a permissão acima).
+  const doseRows = (rows ?? []) as DoseRow[];
+  const ids = Array.from(new Set(doseRows.map((r) => r.encontrista_id)));
+  const photos: Record<string, string | null> = {};
+  if (ids.length) {
+    const { data: ph } = await createAdminClient().from('encontristas').select('id, photo_path').in('id', ids);
+    for (const p of ph ?? []) photos[p.id] = p.photo_path;
+  }
+  const rowsWithPhoto = doseRows.map((r) => ({ ...r, photo_path: photos[r.encontrista_id] ?? null }));
 
   const list = ((plans ?? []) as unknown as Plan[]).filter((p) => p.encontrista?.status === 'ativo');
   list.sort((a, b) => (a.encontrista?.person?.full_name ?? '').localeCompare(b.encontrista?.person?.full_name ?? '', 'pt-BR'));
@@ -123,7 +134,7 @@ export default async function SaudePage({ searchParams }: { searchParams: { dia?
           </nav>
           {campDays.length && !campDays.includes(date) ? <p className="-mt-3 mb-5 text-center text-xs text-pedra-500">{dayLabel(date)} (fora das datas do acampamento)</p> : null}
 
-          <DoseBoard rows={(rows ?? []) as DoseRow[]} date={date} isToday={date === today} canMark={canMark} canOpenSheet={can(access, 'encontristas.ver')} />
+          <DoseBoard rows={rowsWithPhoto} date={date} isToday={date === today} canMark={canMark} canOpenSheet={can(access, 'encontristas.ver')} />
 
           <section aria-labelledby="remedios" className="mt-10">
             <header className="mb-3 flex items-center gap-3">
