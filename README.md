@@ -23,6 +23,7 @@ PostgreSQL, login e regras de acesso) · hospedagem na Vercel.
 | Inscrição pública | Formulário por equipe, com consentimento (LGPD). Bloqueia duplicidade e **nunca passa do limite**, mesmo com várias pessoas ao mesmo tempo. |
 | Servidores | Lista com filtros, cadastro interno, edição, cancelamento/reativação, transferência de equipe e histórico. |
 | Encontristas | Cadastro manual das fichas físicas, lista com busca e filtros, ficha com abas (dados, emergência, saúde, grupo, histórico). |
+| Fotos dos recrutas | Foto no cadastro, na ficha e na aba **Fotos** de Recrutas (para fotografar vários em sequência). A foto é reduzida no celular, fica num bucket privado e só aparece para quem pode ver os recrutas. Aparece na lista, na ficha, na tropa, na distribuição e na presença. |
 | Saúde | Alergias e medicamentos com a opção "não informado". Só quem tem permissão vê, e **cada consulta fica registrada**. |
 | Grupos | Grupos com limite opcional, distribuição em lote e realocação sem duplicar a ficha. |
 | Cronograma | Lista do cronograma por dia, colada de uma vez ou momento a momento. Um tique marca que o momento começou (o anterior é concluído). Mostra agora/próximo, atraso, previsão dos seguintes e permite empurrar horários guardando o original. Atualiza sozinho a cada 15 s. |
@@ -59,6 +60,7 @@ primeiro administrador. Leva uns 20 minutos.
    - [`0006_presenca_camisetas.sql`](supabase/migrations/0006_presenca_camisetas.sql) — presença dos recrutas e relatório de camisetas
    - [`0007_saude_medicacao.sql`](supabase/migrations/0007_saude_medicacao.sql) — cronograma de remédios (módulo Saúde)
    - [`0008_tropas_imagens.sql`](supabase/migrations/0008_tropas_imagens.sql) — imagem de cada tropa e as 8 tropas do acampamento
+   - [`0009_fotos_recrutas.sql`](supabase/migrations/0009_fotos_recrutas.sql) — foto dos recrutas (bucket privado)
 4. Vá em **Authentication** → **Sign In / Providers**:
    - Deixe o provedor **Email** ativado.
    - **Desative** a opção *Allow new users to sign up*. As contas são

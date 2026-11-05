@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { requirePerm } from '@/lib/auth';
 import { createClient } from '@/lib/supabase/server';
 import { getActiveCamp } from '@/lib/camp';
+import { storePhoto } from '@/lib/photos';
 import { done, fail, fromZod, type ActionState } from '@/lib/action';
 import { appErrorCode, friendlyError } from '@/lib/errors';
 import { birthDate, optionalText, phoneOptional, requiredText, uuid } from '@/lib/validation';
@@ -97,9 +98,16 @@ export async function createEncontrista(_: ActionState, fd: FormData): Promise<A
     if (code === 'DATA_NASCIMENTO_INVALIDA') return fail('Confira os campos destacados.', { birth_date: msg });
     return fail(msg);
   }
+  // Foto opcional: a ficha já está salva; se a foto falhar, avisa na ficha.
+  let photoFailed = false;
+  const photo = fd.get('photo');
+  if (camp && photo instanceof File && photo.size > 0) {
+    const res = await storePhoto({ file: photo, campId: camp.id, encontristaId: String(data) });
+    photoFailed = Boolean(res.error);
+  }
   revalidatePath('/encontristas');
-  if (fd.get('next') === 'another') redirect(`/encontristas/novo?salvo=${Date.now()}`);
-  redirect(`/encontristas/${data}?novo=1`);
+  if (fd.get('next') === 'another') redirect(`/encontristas/novo?salvo=${Date.now()}${photoFailed ? '&foto=erro' : ''}`);
+  redirect(`/encontristas/${data}?novo=1${photoFailed ? '&foto=erro' : ''}`);
 }
 
 export async function updateEncontrista(_: ActionState, fd: FormData): Promise<ActionState> {

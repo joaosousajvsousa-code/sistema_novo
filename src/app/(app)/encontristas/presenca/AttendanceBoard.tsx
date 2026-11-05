@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Check, Loader2, Search, Undo2, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/cn';
+import { RecrutaAvatar } from '@/components/RecrutaAvatar';
 import { formatPhone } from '@/lib/format';
 import { markAttendance } from './actions';
 
@@ -19,6 +20,7 @@ export type Row = {
   attendance_status: 'pendente' | 'presente' | 'ausente';
   attendance_at: string | null;
   attendance_by_name: string | null;
+  photo_path?: string | null;
 };
 
 const NO_GROUP = 'sem';
@@ -185,7 +187,8 @@ export function AttendanceBoard({ initial, canMark, canOpenSheet }: { initial: R
                 )}
               >
                 <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
+                  <RecrutaAvatar id={r.id} name={r.full_name} path={r.photo_path} size="lg" className="max-sm:h-16 max-sm:w-16" />
+                  <div className="min-w-0 flex-1">
                     {canOpenSheet ? (
                       <Link href={`/encontristas/${r.id}`} className="block truncate text-base font-bold text-pedra-900 hover:underline">
                         {r.full_name}

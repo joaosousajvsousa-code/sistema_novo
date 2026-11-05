@@ -1,12 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { HeartPulse, IdCard, Lock, MessageCircle, Phone as PhoneIcon, Siren } from 'lucide-react';
+import { ChevronLeft, HeartPulse, IdCard, Lock, MessageCircle, Phone as PhoneIcon, Siren } from 'lucide-react';
 import { can, requirePerm } from '@/lib/auth';
 import { createClient } from '@/lib/supabase/server';
 import { campEditable, getActiveCamp } from '@/lib/camp';
-import { PageHeader, Panel, Badge, DataList, Notice, Tabs } from '@/components/ui/layout';
+import { Panel, Badge, DataList, Notice, Tabs } from '@/components/ui/layout';
 import { cn } from '@/lib/cn';
+import { PhotoUploader } from '@/components/PhotoUploader';
+import { photoUrl } from '@/lib/photo-url';
 import { HistoryList } from '@/components/HistoryList';
 import { ageOn, formatDate, formatDateTime, formatPhone, whatsappLink } from '@/lib/format';
 import { ATTENDANCE, ENCONTRISTA_STATUS, HEALTH_STATUS } from '@/lib/labels';
@@ -68,13 +70,13 @@ function Phone({ value }: { value: string | null }) {
   );
 }
 
-export default async function FichaPage({ params, searchParams }: { params: { id: string }; searchParams: { aba?: string; novo?: string; salvo?: string } }) {
+export default async function FichaPage({ params, searchParams }: { params: { id: string }; searchParams: { aba?: string; novo?: string; salvo?: string; foto?: string } }) {
   const access = await requirePerm('encontristas.ver');
   const supabase = createClient();
   const { data: e } = await supabase
     .from('encontristas')
     .select(
-      'id, camp_id, person_id, status, shirt_size, attendance_status, attendance_at, attendance_by_profile:profiles!encontristas_attendance_by_fkey(full_name), emergency_name, emergency_phone, emergency_relationship, form_notes, admin_notes, created_at, creator:profiles!encontristas_created_by_fkey(full_name), person:people(full_name, phone, birth_date), assignment:participant_group_assignments(group_id, assigned_at, group:participant_groups(name))',
+      'id, camp_id, person_id, status, shirt_size, photo_path, attendance_status, attendance_at, attendance_by_profile:profiles!encontristas_attendance_by_fkey(full_name), emergency_name, emergency_phone, emergency_relationship, form_notes, admin_notes, created_at, creator:profiles!encontristas_created_by_fkey(full_name), person:people(full_name, phone, birth_date), assignment:participant_group_assignments(group_id, assigned_at, group:participant_groups(name))',
     )
     .eq('id', params.id)
     .maybeSingle();
@@ -136,13 +138,30 @@ export default async function FichaPage({ params, searchParams }: { params: { id
 
   return (
     <>
-      <PageHeader
-        title={person.full_name}
-        description={`${age !== null ? `${age} anos · ` : ''}${assignment?.group?.name ?? 'Sem tropa'}`}
-        back={{ href: '/encontristas', label: 'Recrutas' }}
-        actions={e.status !== 'ativo' && st ? <Badge tone={st.tone}>Ficha {st.label.toLowerCase()}</Badge> : null}
-      />
-      {searchParams.novo ? (
+      <Link href="/encontristas" className="-ml-1 mb-3 inline-flex items-center gap-1 rounded text-sm font-bold text-manto hover:underline">
+        <ChevronLeft className="h-4 w-4" aria-hidden /> Recrutas
+      </Link>
+      <section className="relative mb-6 overflow-hidden rounded-2xl border border-pedra-200 bg-white shadow-[0_10px_30px_-20px_rgba(21,32,46,0.45)]">
+        <div aria-hidden className="absolute inset-x-0 top-0 h-20 bg-manto-800 bg-[url('/textura-topografica.svg')] bg-cover bg-center sm:h-24" />
+        <div className="relative flex flex-col items-center gap-4 px-5 pb-5 pt-8 sm:flex-row sm:items-end sm:gap-6 sm:px-6 sm:pt-10">
+          <PhotoUploader id={e.id} name={person.full_name} url={photoUrl(e.id, e.photo_path)} canEdit={canEdit} />
+          <div className="min-w-0 flex-1 text-center sm:pb-2 sm:text-left">
+            <h1 className="text-2xl sm:text-3xl">{person.full_name}</h1>
+            <div className="mt-2 flex flex-wrap justify-center gap-2 sm:justify-start">
+              {age !== null ? <Badge>{age} anos</Badge> : null}
+              <Badge tone={assignment?.group?.name ? 'manto' : 'aviso'}>{assignment?.group?.name ?? 'Sem tropa'}</Badge>
+              {e.shirt_size ? <Badge>Camiseta {e.shirt_size}</Badge> : null}
+              <Badge tone={ATTENDANCE[e.attendance_status]?.tone}>{ATTENDANCE[e.attendance_status]?.label}</Badge>
+              {e.status !== 'ativo' && st ? <Badge tone={st.tone}>Ficha {st.label.toLowerCase()}</Badge> : null}
+            </div>
+          </div>
+        </div>
+      </section>
+      {searchParams.foto === 'erro' ? (
+        <Notice tone="aviso" className="mb-5">
+          Ficha cadastrada, mas a foto não foi enviada. Toque na foto para tentar de novo.
+        </Notice>
+      ) : searchParams.novo ? (
         <Notice tone="ok" className="mb-5">
           Ficha cadastrada.
         </Notice>

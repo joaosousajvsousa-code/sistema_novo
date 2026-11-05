@@ -6,9 +6,10 @@ import { ActionForm, Field, SubmitButton } from '@/components/ui/form';
 import { Checkbox, Select } from '@/components/ui/input';
 import { Badge } from '@/components/ui/layout';
 import { cn } from '@/lib/cn';
+import { RecrutaAvatar } from '@/components/RecrutaAvatar';
 import { assignMany } from './actions';
 
-type Row = { id: string; full_name: string; age: number | null; group_name: string | null; shirt_size: string | null };
+type Row = { id: string; full_name: string; age: number | null; group_name: string | null; shirt_size: string | null; photo_path?: string | null };
 type Group = { id: string; name: string; capacity: number | null; occupied: number };
 
 export function DistributeForm({ rows, groups, allowRemove }: { rows: Row[]; groups: Group[]; allowRemove: boolean }) {
@@ -50,6 +51,7 @@ export function DistributeForm({ rows, groups, allowRemove }: { rows: Row[]; gro
             <li key={r.id}>
               <label className={cn('flex cursor-pointer items-center gap-3 px-4 py-3 sm:px-5', selected.has(r.id) && 'bg-manto-50')}>
                 <Checkbox checked={selected.has(r.id)} onChange={() => toggle(r.id)} />
+                <RecrutaAvatar id={r.id} name={r.full_name} path={r.photo_path} size="md" />
                 <span className="min-w-0 flex-1">
                   <span className="block truncate font-bold">{r.full_name}</span>
                   <span className="block text-xs text-pedra-500">

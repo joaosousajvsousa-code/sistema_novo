@@ -10,6 +10,7 @@ import { Input, Select } from '@/components/ui/input';
 import { formatPhone, onlyDigits } from '@/lib/format';
 import { PAGE_SIZE } from '@/config/app';
 import { RecrutasTabs } from '@/components/RecrutasTabs';
+import { RecrutaAvatar } from '@/components/RecrutaAvatar';
 import { cn } from '@/lib/cn';
 
 export const metadata: Metadata = { title: 'Recrutas' };
@@ -43,7 +44,7 @@ export default async function EncontristasPage({ searchParams }: { searchParams:
 
   let query = supabase
     .from('encontristas_list')
-    .select('id, full_name, phone, group_id, group_name, shirt_size, status, attendance_status', { count: 'exact' })
+    .select('id, full_name, phone, group_id, group_name, shirt_size, status, attendance_status, photo_path', { count: 'exact' })
     .eq('camp_id', camp.id)
     .eq('status', status)
     .order('full_name')
@@ -81,7 +82,7 @@ export default async function EncontristasPage({ searchParams }: { searchParams:
           ) : null
         }
       />
-      <RecrutasTabs current="fichas" showFichas />
+      <RecrutasTabs current="fichas" showFichas showFotos={canCreate} />
       <form className="mb-4 grid grid-cols-2 gap-2 lg:grid-cols-[1fr_165px_185px_120px_165px_auto]" role="search">
         <label htmlFor="q" className="sr-only">
           Buscar por nome ou telefone
@@ -156,7 +157,7 @@ export default async function EncontristasPage({ searchParams }: { searchParams:
           />
         ) : (
           <>
-            <div className="hidden grid-cols-[1fr_160px_180px_90px] gap-4 border-b border-pedra-200 px-5 py-2 text-xs text-pedra-500 md:grid">
+            <div className="hidden grid-cols-[1fr_160px_180px_90px] gap-4 border-b border-pedra-200 py-2 pl-[76px] pr-5 text-xs text-pedra-500 md:grid">
               <span>Nome</span>
               <span>Telefone</span>
               <span>Tropa</span>
@@ -165,10 +166,9 @@ export default async function EncontristasPage({ searchParams }: { searchParams:
             <ul className="divide-y divide-pedra-100">
               {rows.map((r) => (
                 <li key={r.id}>
-                  <Link
-                    href={`/encontristas/${r.id}`}
-                    className="grid grid-cols-[1fr_auto] gap-x-3 gap-y-0.5 px-4 py-3 hover:bg-pedra-100/60 md:grid-cols-[1fr_160px_180px_90px] md:items-center md:gap-4 md:px-5"
-                  >
+                  <Link href={`/encontristas/${r.id}`} className="flex items-center gap-3 px-4 py-3 hover:bg-pedra-100/60 md:gap-4 md:px-5">
+                    <RecrutaAvatar id={r.id} name={r.full_name} path={r.photo_path} size="md" />
+                    <span className="grid min-w-0 flex-1 grid-cols-[1fr_auto] gap-x-3 gap-y-0.5 md:grid-cols-[1fr_160px_180px_90px] md:items-center md:gap-4">
                     <span className="flex min-w-0 items-center gap-2">
                       <span className="truncate font-bold">{r.full_name}</span>
                       {r.attendance_status && r.attendance_status !== 'pendente' ? (
@@ -181,6 +181,7 @@ export default async function EncontristasPage({ searchParams }: { searchParams:
                     <span className="text-sm text-pedra-600">{formatPhone(r.phone) || '—'}</span>
                     <span className="truncate text-sm max-md:col-span-2">
                       {r.group_name ? <span className="text-pedra-700">{r.group_name}</span> : <Badge tone="aviso">Sem tropa</Badge>}
+                    </span>
                     </span>
                   </Link>
                 </li>

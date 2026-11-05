@@ -26,7 +26,7 @@ export default async function DistribuirPage({ searchParams }: { searchParams: {
 
   let query = supabase
     .from('encontristas_list')
-    .select('id, full_name, birth_date, group_name, shirt_size', { count: 'exact' })
+    .select('id, full_name, birth_date, group_name, shirt_size, photo_path', { count: 'exact' })
     .eq('camp_id', camp.id)
     .eq('status', 'ativo')
     .order('full_name')
@@ -91,7 +91,7 @@ export default async function DistribuirPage({ searchParams }: { searchParams: {
           ) : (
             <DistributeForm
               key={`${all}-${page}-${q}`}
-              rows={rows.map((r) => ({ id: r.id, full_name: r.full_name, age: ageOn(r.birth_date), group_name: r.group_name, shirt_size: r.shirt_size }))}
+              rows={rows.map((r) => ({ id: r.id, full_name: r.full_name, age: ageOn(r.birth_date), group_name: r.group_name, shirt_size: r.shirt_size, photo_path: r.photo_path }))}
               groups={groups}
               allowRemove={all}
             />

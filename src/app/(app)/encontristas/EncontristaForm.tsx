@@ -8,6 +8,7 @@ import { Input, Select, Textarea } from '@/components/ui/input';
 import { FormSection } from '@/components/ui/layout';
 import { formatPhone } from '@/lib/format';
 import { cn } from '@/lib/cn';
+import { PhotoField } from '@/components/PhotoField';
 import { createEncontrista, updateEncontrista, updateHealth } from './actions';
 
 export type EncontristaData = {
@@ -138,6 +139,9 @@ function NotesSection({ data }: { data?: EncontristaData }) {
 export function NewEncontristaForm({ sizes }: { sizes: string[] }) {
   return (
     <ActionForm action={createEncontrista} className="space-y-6">
+      <FormSection title="Foto">
+        <PhotoField />
+      </FormSection>
       <PersonSections sizes={sizes} />
       <FormSection title="Saúde" description="Transcreva exatamente o que está na ficha física. Visível só para quem tem permissão.">
         <HealthFields />

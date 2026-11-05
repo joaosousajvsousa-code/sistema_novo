@@ -18,7 +18,7 @@ export default async function PresencaPage() {
   return (
     <>
       <PageHeader title="Recrutas" description="Busque o recruta, confira a tropa e a camiseta e marque a presença." />
-      <RecrutasTabs current="presenca" showFichas={can(access, 'encontristas.ver')} />
+      <RecrutasTabs current="presenca" showFichas={can(access, 'encontristas.ver')} showFotos={can(access, 'encontristas.editar') && can(access, 'encontristas.ver')} />
       {error ? (
         <Notice tone="erro">{error.code === 'PGRST202' ? 'Rode no Supabase o arquivo 0006_presenca_camisetas.sql.' : 'Não foi possível carregar a lista.'}</Notice>
       ) : (

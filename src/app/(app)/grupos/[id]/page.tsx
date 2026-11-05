@@ -9,6 +9,7 @@ import { ButtonLink } from '@/components/ui/button';
 import { ageOn, formatPhone, whatsappLink } from '@/lib/format';
 import { MessageCircle, Star, Users } from 'lucide-react';
 import { TropaCover } from '@/components/TropaCover';
+import { RecrutaAvatar } from '@/components/RecrutaAvatar';
 import { DeleteGroupForm, EditGroupForm, type GroupData } from '../GroupForms';
 import { loadAvailableLeaders, loadGroupLeaders } from '@/lib/tenentes';
 
@@ -31,7 +32,7 @@ export default async function GrupoPage({ params }: { params: { id: string } }) 
   const leaderTeam = manage ? (await supabase.rpc('leaders_team_id', { p_camp: g.camp_id })).data : null;
   const leaderOptions = manage && leaderTeam ? await loadAvailableLeaders() : null;
   const { data: members } = canSee
-    ? await supabase.from('encontristas_list').select('id, full_name, phone, birth_date, shirt_size').eq('group_id', g.id).eq('status', 'ativo').order('full_name')
+    ? await supabase.from('encontristas_list').select('id, full_name, phone, birth_date, shirt_size, photo_path').eq('group_id', g.id).eq('status', 'ativo').order('full_name')
     : { data: null };
 
   return (
@@ -113,9 +114,7 @@ export default async function GrupoPage({ params }: { params: { id: string } }) 
                 return (
                   <li key={m.id}>
                     <Link href={`/encontristas/${m.id}`} className="flex items-center gap-3 px-4 py-3 hover:bg-pedra-100/60 sm:px-5">
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-manto-50 text-sm font-bold text-manto">
-                        {m.full_name.charAt(0).toUpperCase()}
-                      </span>
+                      <RecrutaAvatar id={m.id} name={m.full_name} path={m.photo_path} size="md" />
                       <div className="min-w-0 flex-1">
                         <p className="truncate font-bold">{m.full_name}</p>
                         <p className="text-xs text-pedra-500">
