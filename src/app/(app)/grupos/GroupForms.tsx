@@ -6,9 +6,11 @@ import { ActionForm, Field, FormActions, SubmitButton } from '@/components/ui/fo
 import { Checkbox, Input, Textarea } from '@/components/ui/input';
 import { Badge } from '@/components/ui/layout';
 import { formatPhone } from '@/lib/format';
+import { TROPA_IMAGES } from '@/lib/tropas';
+import { cn } from '@/lib/cn';
 import { createGroup, deleteGroup, updateGroup } from './actions';
 
-export type GroupData = { id: string; name: string; description: string | null; capacity: number | null; notes: string | null };
+export type GroupData = { id: string; name: string; description: string | null; capacity: number | null; notes: string | null; image?: string | null };
 export type LeaderOption = { membership_id: string; full_name: string; phone: string | null; group_id: string | null; group_name: string | null };
 
 function TenentePicker({ options, selected, groupId }: { options: LeaderOption[] | null; selected: string[]; groupId?: string }) {
@@ -53,6 +55,32 @@ function TenentePicker({ options, selected, groupId }: { options: LeaderOption[]
   );
 }
 
+function ImagePicker({ current }: { current: string | null }) {
+  const [value, setValue] = React.useState(current ?? '');
+  return (
+    <fieldset className="sm:col-span-2">
+      <legend className="mb-1.5 text-sm font-bold text-pedra-700">Imagem da tropa</legend>
+      <input type="hidden" name="image" value={value} />
+      <ul className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+        {TROPA_IMAGES.map((t) => (
+          <li key={t.key}>
+            <button
+              type="button"
+              onClick={() => setValue(value === t.key ? '' : t.key)}
+              aria-pressed={value === t.key}
+              className={cn('block w-full overflow-hidden rounded-lg ring-offset-2 transition', value === t.key ? 'ring-2 ring-cirio' : 'opacity-70 hover:opacity-100')}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={`/tropas/${t.key}.webp`} alt={t.label} className="aspect-[960/590] w-full object-contain" loading="lazy" />
+            </button>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-1 text-xs text-pedra-500">Sem escolha, o sistema usa a imagem que combina com o nome da tropa.</p>
+    </fieldset>
+  );
+}
+
 function Fields({ g, leaders, selected }: { g?: GroupData; leaders: LeaderOption[] | null; selected: string[] }) {
   return (
     <div className="grid gap-4 sm:grid-cols-2">
@@ -62,6 +90,7 @@ function Fields({ g, leaders, selected }: { g?: GroupData; leaders: LeaderOption
       <Field label="Limite de integrantes" name="capacity" hint="Deixe em branco para não limitar.">
         <Input type="number" inputMode="numeric" min={1} defaultValue={g?.capacity ?? ''} />
       </Field>
+      <ImagePicker current={g?.image ?? null} />
       <TenentePicker options={leaders} selected={selected} groupId={g?.id} />
       <Field label="Descrição" name="description" className="sm:col-span-2">
         <Textarea rows={2} defaultValue={g?.description ?? ''} />

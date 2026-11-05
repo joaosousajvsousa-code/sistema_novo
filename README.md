@@ -58,6 +58,7 @@ primeiro administrador. Leva uns 20 minutos.
    - [`0005_categorias_equipes.sql`](supabase/migrations/0005_categorias_equipes.sql) — equipes viram categorias de despesa
    - [`0006_presenca_camisetas.sql`](supabase/migrations/0006_presenca_camisetas.sql) — presença dos recrutas e relatório de camisetas
    - [`0007_saude_medicacao.sql`](supabase/migrations/0007_saude_medicacao.sql) — cronograma de remédios (módulo Saúde)
+   - [`0008_tropas_imagens.sql`](supabase/migrations/0008_tropas_imagens.sql) — imagem de cada tropa e as 8 tropas do acampamento
 4. Vá em **Authentication** → **Sign In / Providers**:
    - Deixe o provedor **Email** ativado.
    - **Desative** a opção *Allow new users to sign up*. As contas são

@@ -9,6 +9,7 @@ import { getActiveCamp } from '@/lib/camp';
 import { done, fail, fromZod, type ActionState } from '@/lib/action';
 import { friendlyError } from '@/lib/errors';
 import { optionalText, requiredText, uuid } from '@/lib/validation';
+import { TROPA_KEYS } from '@/lib/tropas';
 
 const schema = z.object({
   name: requiredText('o nome da tropa', 1, 80),
@@ -20,6 +21,10 @@ const schema = z.object({
     .pipe(z.union([z.literal(''), z.coerce.number().int('Use um número inteiro.').min(1, 'Mínimo de 1.').max(2000, 'Máximo de 2000.')]))
     .transform((v) => (v === '' ? null : v)),
   notes: optionalText(2000),
+  image: z
+    .string()
+    .optional()
+    .transform((v) => (v && TROPA_KEYS.includes(v) ? v : null)),
 });
 
 function readLeaders(fd: FormData) {
@@ -42,6 +47,7 @@ function read(fd: FormData) {
     description: fd.get('description') ?? '',
     capacity: fd.get('capacity') ?? '',
     notes: fd.get('notes') ?? '',
+    image: (fd.get('image') as string | null) ?? undefined,
   });
 }
 
