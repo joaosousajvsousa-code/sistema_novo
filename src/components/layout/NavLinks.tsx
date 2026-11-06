@@ -47,15 +47,21 @@ function isActive(pathname: string, href: string) {
 
 export function SidebarNav({ items }: { items: NavItem[] }) {
   const pathname = usePathname();
-  const groups: { key: NavItem['group']; label?: string }[] = [{ key: 'operacao' }, { key: 'admin', label: 'Administração' }];
+  const groups: { key: NavItem['group']; label: string }[] = [
+    { key: 'operacao', label: 'Operação' },
+    { key: 'admin', label: 'Administração' },
+  ];
   return (
-    <nav aria-label="Principal" className="flex-1 space-y-6 overflow-y-auto px-3 pb-4 pt-2">
+    <nav aria-label="Principal" className="relative flex-1 space-y-4 overflow-y-auto px-3 pb-2 pt-2 [scrollbar-width:thin] [@media(max-height:860px)]:space-y-2.5">
       {groups.map((g) => {
         const list = items.filter((i) => i.group === g.key);
         if (!list.length) return null;
         return (
           <div key={g.key}>
-            {g.label ? <p className="mb-1 px-3 text-xs text-manto-100/60">{g.label}</p> : null}
+            <p className="mb-1.5 flex items-center gap-2 px-3 text-[10px] font-bold uppercase tracking-[0.2em] text-cirio/80">
+              {g.label}
+              <span aria-hidden className="h-px flex-1 bg-gradient-to-r from-cirio/40 to-transparent" />
+            </p>
             <ul className="space-y-0.5">
               {list.map((item) => {
                 const Icon = ICONS[item.icon];
@@ -66,13 +72,22 @@ export function SidebarNav({ items }: { items: NavItem[] }) {
                       href={item.href}
                       aria-current={active ? 'page' : undefined}
                       className={cn(
-                        'relative flex h-10 items-center gap-3 rounded-md px-3 text-sm font-bold transition-colors',
-                        active ? 'bg-white/10 text-white' : 'text-manto-100/80 hover:bg-white/5 hover:text-white',
+                        'group relative flex h-10 items-center gap-3 rounded-xl px-2 text-sm font-bold transition-all [@media(max-height:860px)]:h-9',
+                        active
+                          ? 'bg-gradient-to-r from-cirio/25 via-white/10 to-transparent text-white shadow-[inset_0_0_0_1px_rgba(200,161,101,0.35)]'
+                          : 'text-manto-100/80 hover:bg-white/[0.06] hover:text-white',
                       )}
                     >
-                      {active ? <span className="absolute left-0 top-2 h-6 w-0.5 rounded bg-cirio" aria-hidden /> : null}
-                      <Icon className="h-[18px] w-[18px]" />
-                      {item.label}
+                      <span
+                        className={cn(
+                          'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors [@media(max-height:860px)]:h-7 [@media(max-height:860px)]:w-7',
+                          active ? 'bg-cirio text-manto-800 shadow-[0_6px_14px_-6px_rgba(200,161,101,0.9)]' : 'bg-white/[0.06] text-manto-100/80 group-hover:bg-white/10 group-hover:text-white',
+                        )}
+                      >
+                        <Icon className="h-[17px] w-[17px]" />
+                      </span>
+                      <span className="truncate">{item.label}</span>
+                      {active ? <span aria-hidden className="ml-auto mr-1 h-1.5 w-1.5 rounded-full bg-cirio" /> : null}
                     </Link>
                   </li>
                 );
